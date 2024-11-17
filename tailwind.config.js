@@ -11,8 +11,15 @@ export default {
     ],
     theme: {
         extend: {
+            colors:{
+                transparent: 'transparent',
+                current: 'currentColor',        
+                'primary' : '#6A5036',
+                'secondary': '#B29877',
+                'light-secondary' : '#EDE6D9',                 
+              },
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Cairo', ...defaultTheme.fontFamily.sans],
             },
         },
     },
