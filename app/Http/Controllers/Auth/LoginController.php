@@ -42,18 +42,19 @@ class LoginController extends Controller
                 // looking for email if exists
                 $user = UsersModel::withTrashed()
                 ->where('email', '=', $request->email)
-                ->first();
-               
-                if ($user->deleted_at !== null) {
-                    // Account soft deleted
-                    
-                    // Redirect with a message indicating that the account is deleted                    
-                    return back()
-                    ->withErrors(['login_error' => __('account_deleted')])
-                    ->withInput($request->all());                            
-                }
+                ->first();                                               
 
-                if ($user) {
+                if ($user) {       
+                    
+                    // this should appear if usr not null
+                    if ($user->deleted_at !== null) {
+                        // Account soft deleted
+                        
+                        // Redirect with a message indicating that the account is deleted                    
+                        return back()
+                        ->withErrors(['login_error' => __('account_deleted')])
+                        ->withInput($request->all());                            
+                    }
 
                     $user_type = 'admin';
 
@@ -100,8 +101,8 @@ class LoginController extends Controller
                                                 
                         return redirect()->route('subscriptions.packages');
 
-                    } else {
-                       
+                    } else {                                            
+
                         return back()
                             ->withErrors(['login_error' => __('worng_password')])
                             ->withInput($request->all());
