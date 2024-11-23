@@ -11,10 +11,10 @@
         <h2 class="text-center font-bold text-xl">عملية الدفع<br/> تمت بنجاح</h2>
         <p class="text-gray-600">سيتم إرسال نسخة من الفاتورة إلى بريدك الالكتروني</p>
 
-        <h3 class="text-xl font-bold">الفاتورة</h3>
-        <p>13234324234</p>
+        <h3 class="text-xl font-bold">مرجع الدفع</h3>
+        <p>{{ $payment_id }}</p>
 
-        <a href="#" class="submit_btn px-32 w-full text-center">الذهاب إلى الموقع</a>
+        <a href="#" class="submit_btn px-32 w-full text-center">الذهاب إلى لوحة التحكم</a>
     </div>
 
 </div>

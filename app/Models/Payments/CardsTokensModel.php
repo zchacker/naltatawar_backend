@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Subscription;
+namespace App\Models\Payments;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -8,23 +8,22 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class SubscriptionsModel extends Model
+class CardsTokensModel extends Model
 {
+    
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
-    protected $table = 'subscriptions';
+    protected $table = 'cards_tokens';
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
-    protected $fillable = [
+    protected $fillable = [        
         'user_id',
-        'plan_id',
-        'start_date',
-        'end_date',
-        'status'
+        'card_token',
+        'card_digits'
     ];
 
     /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Subscription;
+namespace App\Models\Payments;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class SubscriptionsModel extends Model
+class PaymentsModel extends Model
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
-    protected $table = 'subscriptions';
+    protected $table = 'payments';
 
     /**
      * The attributes that are mass assignable.
@@ -20,11 +20,12 @@ class SubscriptionsModel extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'payment_id',
         'user_id',
-        'plan_id',
-        'start_date',
-        'end_date',
-        'status'
+        'amount',
+        'status',
+        'card_type',
+        'card_digits'
     ];
 
     /**
@@ -48,5 +49,4 @@ class SubscriptionsModel extends Model
             // 'password' => 'hashed',
         ];
     }
-    
 }
