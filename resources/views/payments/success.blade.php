@@ -14,7 +14,7 @@
         <h3 class="text-xl font-bold">مرجع الدفع</h3>
         <p>{{ $payment_id }}</p>
 
-        <a href="#" class="submit_btn px-32 w-full text-center">الذهاب إلى لوحة التحكم</a>
+        <a href="{{ route('client.home') }}" class="submit_btn px-32 w-full text-center">الذهاب إلى لوحة التحكم</a>
     </div>
 
 </div>

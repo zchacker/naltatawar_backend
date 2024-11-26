@@ -17,6 +17,10 @@
     "otp":"رمز التحقق",
     "enter_new_password" : "ادخل كلمة المرور الجديدة",
     "save_and_login":"حفظ وتسجيل الدخول",
+
+    "added_successfuly":"تمت الاضافة بنجاح",
+    "updated_successfuly":"تم التحديث بنجاح",
+    "faild_to_save":"فشل حفظ البيانات",
     
     "name_required": "يجب كتابة الاسم",
     "message_required": "يجب كتابة الرسالة",
@@ -30,5 +34,23 @@
     "email_unique": "البريد الالكتروني مستخدم من حساب آخر, يرجى إدخال رقم بريد الكتروني صحيح",
     "phone_unique": "رقم الهاتف مستخدم من حساب آخر, يرجى إدخال رقم هاتف صحيح",
     "worng_password": "البريد الالكتروني او كلمة المرور غير صحيحة",
-    "account_deleted": "حسابك محذوف, يرجى التواصل مع إدارة الموقع"
+    "account_deleted": "حسابك محذوف, يرجى التواصل مع إدارة الموقع",
+
+    "action":"إجراء",
+    "create_date":"تاريخ الانشاء",
+    "users":"المستخدمون",
+    "add_new":"إنشاء جديد",
+    "edit":"تعديل",
+    "delete":"حذف",
+    "add_user":"اضافة مستخدم",
+    "save":"حفظ",
+    "permissions":"الصلاحيات",
+    "add_real_estate":"إضافة عقارات",
+    "edit_real_estate":"تعديل العقارات",
+    "billing":"الفوترة",
+    "leave_empty_not_change_password":"اتركه فارغ لعدم تغيير كلمة السر",
+
+    "delete_confirmation":"تأكيد الحذف ؟",
+    "remain":"متبقي",
+    "max_users_reached":"تم الوصول للعدد الاقصى من المستخدمين"
 }

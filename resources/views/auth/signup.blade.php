@@ -27,7 +27,7 @@
 
             <button type="submit" class="submit_btn">{{ __('register_account') }}</button>
         </form>
-        <a href="{{ route('auth.login') }}" class="text-blue-600 hover:underline">{{ __('login') }}</a>
+        <a href="{{ route('login') }}" class="text-blue-600 hover:underline">{{ __('login') }}</a>
     </div>
 
 </div>

@@ -8,5 +8,9 @@
 }
 
 .submit_btn{
-    @apply bg-primary p-2 rounded-md text-white border border-secondary
+    @apply bg-primary p-2 px-8 rounded-md text-white border border-secondary
+}
+
+.active_nav_item{
+    @apply bg-primary
 }

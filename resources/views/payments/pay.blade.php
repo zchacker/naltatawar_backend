@@ -16,7 +16,7 @@
       amount: `{{ $price }}`,
       currency: 'SAR',
       description: 'اشتراك باقة ' + ' {{ $name }} ',
-      publishable_api_key: 'pk_test_xfDnxnDCrLwR6BtmP8sKhpF9rBYc3tQKbvLoDXTJ',
+      publishable_api_key: '{{ env("PAYMENT_PUBLISH_KEY") }}',
       callback_url: '{{route("payment.callback")}}',
       methods: ['creditcard'],
       credit_card: {

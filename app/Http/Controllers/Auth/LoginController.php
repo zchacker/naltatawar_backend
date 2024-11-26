@@ -85,8 +85,8 @@ class LoginController extends Controller
                             case "admin":                                
                                 return redirect()->intended(route('subscriptions.packages'));                                
                                 break;
-                            case "agent":
-                                return redirect()->intended(route('subscriptions.packages'));                                
+                            case "agent":                                
+                                return redirect()->intended(route('client.home'));                                
                                 break;
                             case "user":
                                 return redirect()->intended(route('subscriptions.packages'));                                

@@ -16,7 +16,8 @@ export default {
                 current: 'currentColor',        
                 'primary' : '#6A5036',
                 'secondary': '#B29877',
-                'light-secondary' : '#EDE6D9',                 
+                'light-secondary' : '#EDE6D9',
+                'cta': '#FCAC20'               
               },
             fontFamily: {
                 sans: ['Cairo', ...defaultTheme.fontFamily.sans],

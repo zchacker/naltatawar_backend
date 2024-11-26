@@ -2,6 +2,7 @@
 
 namespace App\Models\Auth;
 
+use App\Models\Subscription\SubscriptionsModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -15,6 +16,8 @@ class UsersModel extends Authenticatable
 
     protected $table = 'users';
 
+    protected $primaryKey = 'id';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -26,7 +29,10 @@ class UsersModel extends Authenticatable
         'phone',
         'password',
         'account_type',
-        'parent'
+        'parent',
+        'add_real_estate',
+        'edit_real_estate',
+        'billing'
     ];
 
     /**
@@ -49,4 +55,8 @@ class UsersModel extends Authenticatable
         'password' => 'hashed',
     ];
 
+    public function subscription()
+    {
+        return $this->hasOne(SubscriptionsModel::class, "user_id", "id");
+    }
 }

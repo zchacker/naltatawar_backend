@@ -41,7 +41,7 @@ class PaymentController extends Controller
         // 2 - save it on database
         // 3 - update user subscription plan
 
-        $response = Http::withBasicAuth('sk_test_YkBSaYiZ5FXZP3DbZxzJDqVg2hQmu2PVZ3ZRmo5T', '')
+        $response = Http::withBasicAuth(env("PAYMENT_SECRET_KEY"), '')
             ->get('https://api.moyasar.com/v1/payments/' . $_GET['id']);
 
         // Check response status and data
@@ -62,19 +62,22 @@ class PaymentController extends Controller
             $payment->user_id    = $request->user()->id;
             $payment->amount     = doubleval($data['amount'] / 100);
             $payment->status     = $data['status'];
+            
 
             if (isset($data['source'])) {
 
                 $payment->card_type     = $data['source']['company'];
                 $payment->card_digits   = $data['source']['number'];
 
-                // save card token
-                $card_token              = new CardsTokensModel();
-                $card_token->user_id     = $request->user()->id;
-                $card_token->card_token  = $data['source']['token'];
-                $card_token->card_digits = $data['source']['number'];
-
-                $card_token->save(); // save card token
+                if(isset($data['source']['token']))
+                {
+                    // save card token
+                    $card_token              = new CardsTokensModel();
+                    $card_token->user_id     = $request->user()->id;
+                    $card_token->card_token  = $data['source']['token'];
+                    $card_token->card_digits = $data['source']['number'];
+                    $card_token->save(); // save card token
+                }
 
             }
 

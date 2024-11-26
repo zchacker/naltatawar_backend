@@ -52,7 +52,7 @@ class SignupController extends Controller
 
             // set login cookies
             if (Auth::guard('agent')->attempt(['email' => $request->email, 'password' => $password], true)) {
-                return redirect()->intended(route('subscriptions.packages'));
+                return redirect()->intended(route('subscriptions.packages'));// go to OTP page
             }
 
             return redirect()->intended(route('auth.sign_up'));

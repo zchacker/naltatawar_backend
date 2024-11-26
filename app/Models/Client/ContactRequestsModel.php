@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Subscription;
+namespace App\Models\Client;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -8,23 +8,25 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class SubscriptionsModel extends Model
+class ContactRequestsModel extends Model
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
-    protected $table = 'subscriptions';
+    protected $table = 'contact_requests';
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
-    protected $fillable = [
+    protected $fillable = [        
+        'property_no',
         'user_id',
-        'plan_id',
-        'start_date',
-        'end_date',
-        'status'
+        'name',
+        'phone',
+        'email',
+        'message'
     ];
 
     /**
@@ -49,9 +51,4 @@ class SubscriptionsModel extends Model
         ];
     }
 
-    public function plan()
-    {
-        return $this->hasOne(PlansModel::class, "id", "plan_id");
-    }
-    
 }
