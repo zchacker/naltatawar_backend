@@ -38,11 +38,13 @@ class PropertyController extends Controller
             'real_estate_neighborhood' =>  $request->title,
             'real_estate_rooms' =>  $request->rooms,
             'real_estate_price' =>  $request->price,
+            'status' => 'pending'
         ]);
 
         if ($response->successful()) 
         {
-            
+            $data = $response->json();
+            dd( $data['id'] );
             return back()->with(['success' => __('added_successfuly')]);
 
         }else{
