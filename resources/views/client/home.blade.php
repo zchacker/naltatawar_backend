@@ -33,7 +33,7 @@
             <span class="font-medium text-white">إضافة مستخدم</span>
         </a>
 
-        <a href="#" class="bg-cta px-8 py-2 items-center rounded-full flex gap-2">
+        <a href="{{ route('client.support.create') }}" class="bg-cta px-8 py-2 items-center rounded-full flex gap-2">
             <img src="{{ asset('imgs/support.png') }}" alt="" class="w-[20px]" />
             <span class="font-medium text-white"> إنشاء تذكرة دعم </span>
         </a>

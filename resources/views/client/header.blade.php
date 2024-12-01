@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css' , 'resources/js/app.js'])    
-    <title>Document</title>
+    <title>{{ __('controle_panel') }}</title>
     <style>
         html, * {
             font-family: 'Cairo', sans-serif;            
@@ -37,7 +37,7 @@
             </div>
         </a>
 
-        <a href="#">
+        <a href="{{ route('client.property.list') }}">
             <div class="flex items-center gap-4 border-t-[1px] border-white text-white p-2 py-3 bg-secondary hover:bg-primary">
                 <img src="{{ asset('imgs/houses.png') }}" alt="" class="h-[30px]">
                 <h3>الوحدات العقارية</h3>
@@ -58,14 +58,14 @@
             </div>
         </a>
 
-        <a href="#">
+        <a href="{{ route('client.payments') }}">
             <div class="flex items-center gap-4 border-t-[1px] border-white text-white p-2 py-3 bg-secondary hover:bg-primary">
                 <img src="{{ asset('imgs/invoice.png') }}" alt="" class="h-[30px]">
                 <h3> الفوترة والاشتراك </h3>
             </div>
         </a>
 
-        <a href="#">
+        <a href="{{ route('client.support.list') }}">
             <div class="flex items-center gap-4 border-t-[1px] border-white text-white p-2 py-3 bg-secondary hover:bg-primary">
                 <img src="{{ asset('imgs/support.png') }}" alt="" class="h-[30px]">
                 <h3> الدعم الفني </h3>

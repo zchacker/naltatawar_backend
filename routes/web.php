@@ -13,6 +13,8 @@ Route::get('/test/', function(){
     return view('test');
 });
 
+Route::get('/', [\App\Http\Controllers\Auth\LoginController::class, 'index'])->name('home');
+
 // Route::get('/login', [\App\Http\Controllers\Auth\LoginController::class, 'index'])->name('auth.login');
 Route::get('/login', [\App\Http\Controllers\Auth\LoginController::class, 'index'])->name('login');
 Route::post('/login/action', [\App\Http\Controllers\Auth\LoginController::class, 'login_action'])->name('auth.login.action');
@@ -40,9 +42,9 @@ Route::group(['middleware' => ['auth:agent']], function () {
     Route::get('/home', [\App\Http\Controllers\Client\HomeController::class, 'home'])->name('client.home');
     
     // real estate
-    Route::get('/home', [\App\Http\Controllers\Client\HomeController::class, 'home'])->name('client.home');
-    Route::get('/home', [\App\Http\Controllers\Client\HomeController::class, 'home'])->name('client.home');
-    Route::get('/home', [\App\Http\Controllers\Client\HomeController::class, 'home'])->name('client.home');
+    Route::get('/properties', [\App\Http\Controllers\Client\PropertyController::class, 'list'])->name('client.property.list');
+    Route::get('/properties/create', [\App\Http\Controllers\Client\PropertyController::class, 'create'])->name('client.property.create');
+    Route::post('/properties/create/action', [\App\Http\Controllers\Client\PropertyController::class, 'create_action'])->name('client.property.create.action');
     
 
     // contact requests    
@@ -59,6 +61,15 @@ Route::group(['middleware' => ['auth:agent']], function () {
     
     Route::delete('/users/delete/{user}', [\App\Http\Controllers\Client\UsersController::class, 'delete'])->name('client.users.delete.action');
     
+    // payments
+    Route::get('/payments/list', [\App\Http\Controllers\Client\Billing\PaymentsController::class, 'payments'])->name('client.payments');
+    
+    // support
+    Route::get('/support/list', [\App\Http\Controllers\Client\SupportController::class, 'list'])->name('client.support.list');
+    Route::get('/support/create', [\App\Http\Controllers\Client\SupportController::class, 'create'])->name('client.support.create');
+    Route::post('/support/create/action', [\App\Http\Controllers\Client\SupportController::class, 'create_action'])->name('client.support.create.action');
+    Route::get('/support/update/{id}', [\App\Http\Controllers\Client\SupportController::class, 'update'])->name('client.support.update');
+    Route::post('/support/update/action/{id}', [\App\Http\Controllers\Client\SupportController::class, 'update_action'])->name('client.support.update.action');
     
     Route::get('/logout', [\App\Http\Controllers\Auth\LogoutController::class, 'agent_logout'])->name('client.logout');
 });

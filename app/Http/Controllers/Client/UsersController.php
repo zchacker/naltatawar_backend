@@ -15,8 +15,6 @@ class UsersController extends Controller
 {
     public function home(Request $request)
     {
-
-
         $max_user   = $request->user()->subscription->plan->user;
         $query      = UsersModel::where('parent', $request->user()->id);
         $sum        = $query->count('id');

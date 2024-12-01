@@ -9,8 +9,7 @@ class HomeController extends Controller
 {
     
     public function home(Request $request)
-    {
-
+    {        
         if($request->user()->subscription === null)
         {
             return redirect()->route('subscriptions.packages');

@@ -18,6 +18,8 @@
     "enter_new_password" : "ادخل كلمة المرور الجديدة",
     "save_and_login":"حفظ وتسجيل الدخول",
 
+    "controle_panel":"لوحة التحكم - نمع التطوير",
+
     "added_successfuly":"تمت الاضافة بنجاح",
     "updated_successfuly":"تم التحديث بنجاح",
     "faild_to_save":"فشل حفظ البيانات",
@@ -52,5 +54,40 @@
 
     "delete_confirmation":"تأكيد الحذف ؟",
     "remain":"متبقي",
-    "max_users_reached":"تم الوصول للعدد الاقصى من المستخدمين"
+    "max_users_reached":"تم الوصول للعدد الاقصى من المستخدمين",
+
+    "payments":"المدفوعات",
+    "billing_invoice":"الفوترة والمدفوعات",
+    "total":"الاجمالي",
+    "status":"الحالة",
+    "amount":"المبلغ",
+    "ref_no":"رقم مرجعي",
+    "view":"عرض",
+
+    "support":"الدعم الفني",
+    "ticket_title":"عنوان التذكرة",
+    "issue_description":"وصف المشكلة",
+    "ticket_status":"حالة التذكرة",
+    "open":"مفتوحة",
+    "closed":"مغلقة",
+    "create_ticket":"إنشاء تذكرة",
+    "ticket_replay":"الرد على التذكرة",
+    "publish_issue_1":"صعوبة في رفع الصور أو الفيديو.",
+    "publish_issue_2":"مشكلة في حفظ تفاصيل العقار.",
+    "publish_issue_3":"العقار لا يظهر في القائمة العامة.",
+    "payment_issue_1":"مشكلة في إتمام عملية الدفع.",
+    "payment_issue_2":"مشكلة في تجديد الاشتراك.",
+    "user_issue_1":"صعوبة في إضافة مدراء جدد.",
+    "user_issue_2":"مشكلة في حذف أو تعديل بيانات المدراء.",
+    "user_issue_3":"نسيان كلمة المرور أو تسجيل الدخول.",
+    "performance_issue_1":"بطء في تحميل المنصة.",
+    "performance_issue_2":"خطأ تقني أثناء استخدام المنصة.",
+    "performance_issue_3":"استفسار حول استخدام ميزة معينة.",
+
+    "your_properties":"عقاراتك",
+    "create_proprety":"إنشاء عقار",
+
+    "rent":"إيجار",
+    "sell":"بيع",
+    "invest":"استثمار"
 }
