@@ -7,6 +7,7 @@ use App\Models\Auth\UsersModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class SignupController extends Controller
@@ -48,7 +49,15 @@ class SignupController extends Controller
             // create user account
             $user = UsersModel::create($request->all());
 
+            /*
+            $code = random_int(100000, 999999);
+
             // send email for verification
+            Mail::send('emails.confirm_email', ['code' => $code], function ($message) use ($request) {
+                $message->to($request->email);
+                $message->subject(' تأكيد البريد الالكتروني ');
+            });
+            */
 
             // set login cookies
             if (Auth::guard('agent')->attempt(['email' => $request->email, 'password' => $password], true)) {

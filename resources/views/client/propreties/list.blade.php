@@ -8,6 +8,14 @@
         <span class="font-medium text-white"> {{ __('create_proprety') }} </span>
     </a>
 
+    <div>
+        <form action="{{ route('client.property.list') }}" method="get" class="flex gap-2 items-center">
+            <input type="text" name="query" class="input w-1/2" placeholder="رقم العقار، او اسم العقار" value="{{ old('query') }}" />
+            <button type="submit" class="submit_btn">بحث</button>
+            <a href="{{ route('client.property.list') }}">مسح</a>
+        </form>
+    </div>
+
     <div class="mt-0 flex flex-col gap-4">
         
         <table class="table-fixed rounded-md overflow-hidden">

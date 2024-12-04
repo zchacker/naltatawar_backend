@@ -30,6 +30,8 @@ class UsersModel extends Authenticatable
         'password',
         'account_type',
         'parent',
+        'email_verified_at',
+        'code',
         'add_real_estate',
         'edit_real_estate',
         'billing'
