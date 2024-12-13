@@ -121,6 +121,31 @@
                 </div>
             </div>
 
+            <div class="flex flex-col items-start justify-start">
+                <div class="w-full bg-white shadow-md rounded-lg">
+                    <div class="px-6 py-4 border-b">
+                        <h5 class="text-start text-lg font-bold">Upload File</h5>
+                    </div>
+
+                    <div class="px-6 py-4">
+                        <div id="upload-container" class="text-center mb-4">
+                            <button id="browseImages" type="button" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Browse Images</button>
+                            <button id="browseVideos" type="button" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 ml-4">Browse Videos</button>
+                        </div>
+
+                        <div class="progress mt-4 hidden">
+                            <div class="bg-blue-500 h-6 text-center text-white leading-6" style="width: 0%" id="progressBar">0%</div>
+                        </div>
+
+                        <h6 class="text-gray-600 font-semibold mt-6">Image Previews</h6>
+                        <div id="image-preview-container" class="mt-4 grid grid-cols-3 gap-4"></div>
+
+                        <h6 class="text-gray-600 font-semibold mt-6">Video Previews</h6>
+                        <div id="video-preview-container" class="mt-4 grid grid-cols-3 gap-4"></div>
+                    </div>
+
+                </div>
+            </div>
 
             <button type="submit" class="submit_btn self-start">{{__('save')}}</button>
 
@@ -128,5 +153,127 @@
     </div>
 
 </div>
+
+
+
+
+<!-- jQuery -->
+<!-- <script src="{{ asset('assets/js/jQuery.min.js') }}"></script> -->
+<script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+<!-- Resumable JS -->
+<script src="https://cdn.jsdelivr.net/npm/resumablejs@1.1.0/resumable.min.js"></script>
+
+<script type="text/javascript">
+    let browseImages = $('#browseImages');
+    let browseVideos = $('#browseVideos');
+    let imagePreviewContainer = $('#image-preview-container');
+    let videoPreviewContainer = $('#video-preview-container');
+    let progressBar = $('#progressBar');
+
+    let imageUploader = new Resumable({
+        target: '{{ route('client.property.file.upload') }}',
+        query: { _token: '{{ csrf_token() }}' },
+        fileType: ['jpg', 'png', 'jpeg'],
+        headers: {
+            'Accept': 'application/json'
+        },
+        testChunks: false,
+        throttleProgressCallbacks: 1,
+    });
+
+    let videoUploader = new Resumable({
+        target: '{{ route('client.property.file.upload') }}',
+        query: { _token: '{{ csrf_token() }}' },
+        fileType: ['mp4'],
+        headers: {
+            'Accept': 'application/json'
+        },
+        testChunks: false,
+        throttleProgressCallbacks: 1,
+    });
+
+    imageUploader.assignBrowse(browseImages[0]);
+    videoUploader.assignBrowse(browseVideos[0]);
+
+    imageUploader.on('fileAdded', function (file) {
+        showProgress();
+        previewFile(file, imagePreviewContainer);
+        imageUploader.upload();
+    });
+
+    videoUploader.on('fileAdded', function (file) {
+        showProgress();
+        previewFile(file, videoPreviewContainer);
+        videoUploader.upload();
+    });
+
+    imageUploader.on('fileProgress', function (file) {
+        updateProgress(Math.floor(file.progress() * 100));
+    });
+
+    videoUploader.on('fileProgress', function (file) {
+        updateProgress(Math.floor(file.progress() * 100));
+    });
+
+    imageUploader.on('fileSuccess', function (file, response) {
+        response = JSON.parse(response);
+        //alert('Image uploaded successfully!');
+    });
+
+    videoUploader.on('fileSuccess', function (file, response) {
+        response = JSON.parse(response);
+        //alert('Video uploaded successfully!');
+    });
+
+    imageUploader.on('fileError', function (file, response) {
+        alert('Image uploading error.');
+    });
+
+    videoUploader.on('fileError', function (file, response) {
+        alert('Video uploading error.');
+    });
+
+    function showProgress() {
+        progressBar.css('width', '0%');
+        progressBar.text('0%');
+        progressBar.parent().removeClass('hidden');
+    }
+
+    function updateProgress(value) {
+        progressBar.css('width', `${value}%`);
+        progressBar.text(`${value}%`);
+    }
+
+    function previewFile(file, container) {
+        let reader = new FileReader();
+        reader.onload = function (e) {
+            let content;
+            if (file.file.type.startsWith('image/')) {
+                content = `
+                    <div class="relative">
+                        <img src="${e.target.result}" alt="Preview" class="w-24 h-24 object-cover rounded">
+                        <button class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center remove-preview">&times;</button>
+                    </div>`;
+            } else if (file.file.type.startsWith('video/')) {
+                content = `
+                    <div class="relative">
+                        <video class="w-24 h-24 object-cover rounded" controls>
+                            <source src="${e.target.result}" type="${file.file.type}">
+                            Your browser does not support the video tag.
+                        </video>
+                        <button class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center remove-preview">&times;</button>
+                    </div>`;
+            }
+
+            container.append(content);
+
+            // Attach event listener to remove button
+            container.find('.remove-preview').last().on('click', function () {
+                $(this).parent().remove();
+            });
+        };
+        reader.readAsDataURL(file.file);
+    }
+</script>
 
 @include('client.footer')

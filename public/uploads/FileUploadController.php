@@ -20,6 +20,7 @@ class FileUploadController extends Controller {
     }
 
     public function uploadLargeFiles(Request $request) {
+        
         $receiver = new FileReceiver('file', $request, HandlerFactory::classFromRequest($request));
 
         if (!$receiver->isUploaded()) {
@@ -34,7 +35,7 @@ class FileUploadController extends Controller {
             $fileName .= '_' . md5(time()) . '.' . $extension; // a unique file name
 
             $disk = Storage::disk(config('filesystems.default'));
-            $path = $disk->putFileAs('videos', $file, $fileName);
+            $path = $disk->putFileAs('uploads', $file, $fileName);
 
             // delete chunked file
             unlink($file->getPathname());
