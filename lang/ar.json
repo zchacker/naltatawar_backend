@@ -87,6 +87,10 @@
     "your_properties":"عقاراتك",
     "create_proprety":"إنشاء عقار",
 
+    "proprety_imgs":"صور العقار",
+    "proprety_videos":"فديوهات العقار",
+    "select_file":"اختر ملف",
+    "upload_fiels":"رفع الملفات",
     "rent":"إيجار",
     "sell":"بيع",
     "invest":"استثمار",

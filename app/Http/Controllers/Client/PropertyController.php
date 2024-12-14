@@ -154,7 +154,7 @@ class PropertyController extends Controller
         
             $file = $fileReceived->getFile(); // get file
             $extension = $file->getClientOriginalExtension();
-            $fileName = str_replace('.'.$extension, '', $file->getClientOriginalName()); //file name without extenstion
+            $fileName  = str_replace('.'.$extension, '', $file->getClientOriginalName()); //file name without extenstion
             $fileName .= '_' . md5(time()) . '.' . $extension; // a unique file name
 
             $disk = Storage::disk(config('filesystems.default'));
@@ -166,7 +166,8 @@ class PropertyController extends Controller
             return [
                 'path' => asset('storage/' . $path),
                 'filename' => $fileName,
-                'file_id' => 123
+                'file_id' => 123,
+                'wp_id' => 1234
             ];
         }
 
