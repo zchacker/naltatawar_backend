@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Models\Property\FilesModel;
 use App\Models\Property\PropertyModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -160,14 +161,38 @@ class PropertyController extends Controller
             $disk = Storage::disk(config('filesystems.default'));
             $path = $disk->putFileAs('uploads', $file, $fileName);
 
+
+            // push it to storage server
+            $response_img = Http::withHeaders([
+                'Authorization' => 'Basic ' . base64_encode(env('WORDPRESS_USER') . ":" . env('WORDPRESS_KEY')),                
+            ])->attach(    
+                'file', // The file key as expected by WordPress
+                file_get_contents($file->getPathname()),
+                $file->getClientOriginalName()    
+            )->post(env('WORDPRESS_API') . "media");
+    
+            // dd($image->getClientOriginalName());
+            // dd($response_img->json());
+
+            $data = $response_img->json();
+
+            $file_model           = new FilesModel();
+            $file_model->user_id  = $request->user()->id;
+            $file_model->url      = $data["source_url"];
+            $file_model->wp_id    = $data["id"];
+            $file_model->used     = 0;
+            $file_model->save();
+
+            $file_id = $file_model->id; // Retrieve the ID of the newly inserted row
+
             // delete chunked file
             unlink($file->getPathname());
 
             return [
                 'path' => asset('storage/' . $path),
                 'filename' => $fileName,
-                'file_id' => 123,
-                'wp_id' => 1234
+                'file_id' => $file_id,
+                'wp_id' => $data["id"]
             ];
         }
 

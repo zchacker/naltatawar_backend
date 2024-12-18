@@ -17,7 +17,7 @@
         </div>
         @endif
 
-        <form action="{{ route('client.property.create.action') }}" method="post" enctype="multipart/form-data" class="w-full flex flex-col gap-4">
+        <form action="{{ route('client.property.create.action') }}" method="post" id="myform" enctype="multipart/form-data" class="w-full flex flex-col gap-4">
             @csrf
 
             <input type="text" name="title" class="input" placeholder="عنوان العقار" value="{{ old('title') }}" required />
@@ -142,7 +142,7 @@
                         </div>
 
                         <h6 class="text-gray-600 font-semibold mt-6">{{ __('proprety_imgs') }}</h6>
-                        <div id="image-preview-container" class="mt-4 relative bg-light-secondary min-h-[200px] grid grid-cols-3 gap-4 p-4 rounded-lg border-dashed border-primary border">
+                        <div id="image-preview-container" class="mt-4 relative bg-light-secondary min-h-[200px] grid grid-cols-4 gap-4 p-4 rounded-lg border-dashed border-primary border">
                             <img src="{{ asset('imgs/print_photo.png') }}" class="w-[150px] absolute left-[50%] top-5" alt="" id="img_placeholder" />
                         </div>
 
@@ -152,7 +152,7 @@
                         </div>
 
                         <h6 class="text-gray-600 font-semibold mt-6">{{ __('proprety_videos') }}</h6>
-                        <div id="video-preview-container" class="mt-4 relative bg-light-secondary min-h-[200px] grid grid-cols-3 gap-4 p-4 rounded-lg border-dashed border-primary border">
+                        <div id="video-preview-container" class="mt-4 relative bg-light-secondary min-h-[200px] grid grid-cols-4 gap-4 p-4 rounded-lg border-dashed border-primary border">
                             <img src="{{ asset('imgs/outline_video.png') }}" class="w-[150px]  absolute left-[50%] top-5" alt="" id="vid_placeholder" />
                         </div>
                     </div>
@@ -160,7 +160,7 @@
                 </div>
             </div>
 
-            <button type="submit" class="submit_btn self-start">{{__('save')}}</button>
+            <button type="submit" class="submit_btn self-start" id="submit-btn">{{__('save')}}</button>
 
         </form>
     </div>
@@ -177,11 +177,13 @@
 <script src="https://cdn.jsdelivr.net/npm/resumablejs@1.1.0/resumable.min.js"></script>
 
 <script type="text/javascript">
+
     let uploadedFiles = {
         images: [],
         videos: []
     };
 
+    let submitBtn    = $('#submit-btn');
     let browseImages = $('#browseImages');
     let browseVideos = $('#browseVideos');
     let imagePreviewContainer = $('#image-preview-container');
@@ -221,6 +223,7 @@
     videoUploader.assignBrowse(browseVideos[0]);
 
     imageUploader.on('fileAdded', function(file) {
+        console.log("file added");
         showProgress();
         previewFile(file, imagePreviewContainer);
         imageUploader.upload();
@@ -232,7 +235,7 @@
         videoUploader.upload();
     });
 
-    imageUploader.on('fileProgress', function(file) {
+    imageUploader.on('fileProgress', function(file) {                
         updateProgress(Math.floor(file.progress() * 100));
     });
 
@@ -241,11 +244,13 @@
     });
 
     imageUploader.on('fileSuccess', function(file, response) {
+        submitBtn.removeAttr("disabled");
         // image uploaded successfuly
         response = JSON.parse(response);
         let fileData = {
+            file: file,
             path: response.path,
-            filename: response.filename,
+            filename: file.file.name,
             file_id: response.file_id,
             wp_id: response.wp_id
         };
@@ -255,6 +260,7 @@
     });
 
     videoUploader.on('fileSuccess', function(file, response) {
+        submitBtn.removeAttr("disabled");
         // video uploaded successfuly
         response = JSON.parse(response);
         let fileData = {
@@ -277,12 +283,14 @@
     });
 
     function showProgress() {
+        submitBtn.attr("disabled", true);
         progressBar.css('width', '0%');
         progressBar.text('0%');
         progressBar.parent().removeClass('hidden');
     }
 
     function updateProgress(value) {
+        console.log("Progress: ",value);
         progressBar.css('width', `${value}%`);
         progressBar.text(`${value}%`);
     }
@@ -294,13 +302,13 @@
             if (file.file.type.startsWith('image/')) {
                 content = `
                     <div class="relative" data-file-name="${file.fileName}">
-                        <img src="${e.target.result}" alt="Preview" class="w-24 h-24 object-cover rounded">
+                        <img src="${e.target.result}" alt="Preview" class="w-56 h-56 bg-white object-cover rounded">
                         <button type="button" class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center remove-preview-image" data-file-name="${file.fileName}">&times;</button>
                     </div>`;
             } else if (file.file.type.startsWith('video/')) {
                 content = `
                     <div class="relative" data-file-name="${file.fileName}">
-                        <video class="w-24 h-24 object-cover rounded" controls>
+                        <video class="bg-white w-56 h-56 object-cover rounded" controls>
                             <source src="${e.target.result}" type="${file.file.type}">
                             Your browser does not support the video tag.
                         </video>
@@ -312,11 +320,16 @@
 
             // Attach event listener to remove button
             container.find('.remove-preview-image').last().on('click', function() {
-                let fileName = $(this).data('file-name');
+                let fileName = $(this).data('file-name');                
+                let file = uploadedFiles.images.find(file => file.filename.toLowerCase() === fileName.toLowerCase());                                
+                // imageUploader.removeFile(file);
+                imageUploader.cancel();// resetting
+                // imageUploader.files = [];
                 sendRemoveRequest(fileName, 'image');
                 $(this).parent().remove();
             });
 
+            // Attach event listener to remove button
             container.find('.remove-preview-video').last().on('click', function() {
                 let fileName = $(this).data('file-name');
                 sendRemoveRequest(fileName, 'video');
@@ -361,7 +374,7 @@
 
 
     // On form submit, create hidden inputs for each number in the array
-    $('#myForm').on('submit', function(event) {
+    $('#myform').on('submit', function(event) {
         const form = $(this);
 
         // Remove any previously added hidden inputs to avoid duplicates
@@ -384,6 +397,8 @@
                 .val(fileData.file_id)
                 .appendTo(form);
         });
+
+        event.preventDefault();
 
         // Optional: Prevent form submission if the array is empty
         /**
