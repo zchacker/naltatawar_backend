@@ -44,10 +44,12 @@
 
             </div>
 
+            {{--
             <div class="my-8">
                 <label for="image">صورة الغلاف</label>
                 <input type="file" name="image" class="" />
             </div>
+            --}}            
 
             <input type="text" name="neighborhood" class="input" placeholder="اسم الحي" value="{{ old('neighborhood') }}" required />
 
@@ -133,10 +135,24 @@
                         </div>
 
                         <div class="progress mt-4 hidden my-12">
-                            <div class="bg-green-600 h-6 text-center text-white leading-6" style="width: 0%" id="progressBar">0%</div>
+                            <div class="bg-green-600 h-6 text-center text-white leading-6 rounded-md" style="width: 0%" id="coverImageProgressBar">0%</div>
                         </div>
 
-                        <div class="flex justify-start items-center gap-4">
+                        <div class="flex justify-start items-center gap-4 mt-4">
+                            <button id="coverImage" type="button" class="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-400">{{ __('select_file') }}</button>
+                            <p>{{ __('cover_img') }}</p>
+                        </div>
+
+                        <h6 class="text-gray-600 font-semibold mt-6">{{ __('cover_img') }}</h6>
+                        <div id="cover-image-preview-container" class="mt-2 mb-6 relative bg-light-secondary min-h-[200px] grid grid-cols-4 gap-4 p-4 rounded-lg border-dashed border-primary border">
+                            <img src="{{ asset('imgs/print_photo.png') }}" class="w-[150px] absolute left-[50%] top-5" alt="" id="cover_img_placeholder" />
+                        </div>
+
+                        <div class="progress mt-4 hidden my-12">
+                            <div class="bg-green-600 h-6 text-center text-white leading-6 rounded-md" style="width: 0%" id="imageProgressBar">0%</div>
+                        </div>
+
+                        <div class="flex justify-start items-center gap-4 mt-8">
                             <button id="browseImages" type="button" class="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-400">{{ __('select_file') }}</button>
                             <p>{{ __('proprety_imgs') }}</p>
                         </div>
@@ -146,7 +162,11 @@
                             <img src="{{ asset('imgs/print_photo.png') }}" class="w-[150px] absolute left-[50%] top-5" alt="" id="img_placeholder" />
                         </div>
 
-                        <div class="flex justify-start items-center gap-4 mt-10">
+                        <div class="progress mt-4 hidden my-12">
+                            <div class="bg-green-600 h-6 text-center text-white leading-6 rounded-md" style="width: 0%" id="videoProgressBar">0%</div>
+                        </div>
+
+                        <div class="flex justify-start items-center gap-4 mt-8">
                             <button id="browseVideos" type="button" class="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-400">{{ __('select_file') }}</button>
                             <p>{{ __('proprety_videos') }}</p>
                         </div>
@@ -178,20 +198,44 @@
 
 <script type="text/javascript">
 
+    var coverImg;
     let uploadedFiles = {
         images: [],
         videos: []
     };
 
-    let submitBtn    = $('#submit-btn');
-    let browseImages = $('#browseImages');
-    let browseVideos = $('#browseVideos');
-    let imagePreviewContainer = $('#image-preview-container');
-    let videoPreviewContainer = $('#video-preview-container');
-    let progressBar = $('#progressBar');
+    let submitBtn               = $('#submit-btn');
 
-    let img_placeholder = $('#img_placeholder');
-    let vid_placeholder = $('#vid_placeholder');
+    let coverImage              = $('#coverImage');
+    let browseImages            = $('#browseImages');
+    let browseVideos            = $('#browseVideos');  
+
+    let coverPreviewContainer   = $('#cover-image-preview-container');
+    let imagePreviewContainer   = $('#image-preview-container');
+    let videoPreviewContainer   = $('#video-preview-container');
+
+    let coverProgressBar        = $('#coverImageProgressBar');
+    let imageProgressBar        = $('#imageProgressBar');
+    let videoProgressBar        = $('#videoProgressBar');
+
+    let cover_img_placeholder   = $('#cover_img_placeholder');
+    let img_placeholder         = $('#img_placeholder');
+    let vid_placeholder         = $('#vid_placeholder');
+
+    let coverImageUploader = new Resumable({
+        target: `{{ route('client.property.file.upload') }}`,
+        query: {
+            _token: '{{ csrf_token() }}'
+        },
+        fileType: ['jpg', 'png', 'jpeg'],
+        headers: {
+            'Accept': 'application/json'
+        },
+        testChunks: false,
+        throttleProgressCallbacks: 1,
+        maxFiles: 1,
+        //chunkSize: 1 * 1024 * 1024, // 1 MB
+    });
 
     let imageUploader = new Resumable({
         target: `{{ route('client.property.file.upload') }}`,
@@ -204,6 +248,7 @@
         },
         testChunks: false,
         throttleProgressCallbacks: 1,
+        //chunkSize: 1 * 1024 * 1024, // 1 MB
     });
 
     let videoUploader = new Resumable({
@@ -219,28 +264,60 @@
         throttleProgressCallbacks: 1,
     });
 
+    coverImageUploader.assignBrowse(coverImage[0]);
     imageUploader.assignBrowse(browseImages[0]);
     videoUploader.assignBrowse(browseVideos[0]);
 
+    coverImageUploader.on('fileAdded', function(file) {
+        console.log("file added");        
+        showCoverImageProgress();
+        coverPreviewFile(file, coverPreviewContainer);
+        coverImageUploader.upload();
+    });
+
     imageUploader.on('fileAdded', function(file) {
         console.log("file added");
-        showProgress();
+        showImageProgress();
         previewFile(file, imagePreviewContainer);
         imageUploader.upload();
     });
 
     videoUploader.on('fileAdded', function(file) {
-        showProgress();
+        showVideoProgress();
         previewFile(file, videoPreviewContainer);
         videoUploader.upload();
     });
 
+    coverImageUploader.on('fileProgress', function(file) {                
+        updateCoverImageProgress(Math.floor(file.progress() * 100));
+    });
+
     imageUploader.on('fileProgress', function(file) {                
-        updateProgress(Math.floor(file.progress() * 100));
+        updateImageProgress(Math.floor(file.progress() * 100));
     });
 
     videoUploader.on('fileProgress', function(file) {
-        updateProgress(Math.floor(file.progress() * 100));
+        updateVideoProgress(Math.floor(file.progress() * 100));
+    });
+
+    coverImageUploader.on('fileSuccess', function(file, response) {
+        submitBtn.removeAttr("disabled");
+        // image uploaded successfuly
+        response = JSON.parse(response);
+
+        let fileData = {
+            file: file,
+            path: response.path,
+            filename: file.file.name,
+            file_id: response.file_id,
+            wp_id: response.wp_id
+        };
+        coverImg = fileData;
+
+        console.log("coverImg: " , coverImg);
+        
+        cover_img_placeholder.hide();
+        storeFileId(response.file_id, file.fileName, coverPreviewContainer);
     });
 
     imageUploader.on('fileSuccess', function(file, response) {
@@ -274,6 +351,10 @@
         storeFileId(response.file_id, file.fileName, videoPreviewContainer);
     });
 
+    coverImageUploader.on('fileError', function(file, response) {
+        alert('Image uploading error.');
+    });
+
     imageUploader.on('fileError', function(file, response) {
         alert('Image uploading error.');
     });
@@ -282,17 +363,43 @@
         alert('Video uploading error.');
     });
 
-    function showProgress() {
+    function showCoverImageProgress() {
         submitBtn.attr("disabled", true);
-        progressBar.css('width', '0%');
-        progressBar.text('0%');
-        progressBar.parent().removeClass('hidden');
+        coverProgressBar.css('width', '0%');
+        coverProgressBar.text('0%');
+        coverProgressBar.parent().removeClass('hidden');
     }
 
-    function updateProgress(value) {
+    function showImageProgress() {
+        submitBtn.attr("disabled", true);
+        imageProgressBar.css('width', '0%');
+        imageProgressBar.text('0%');
+        imageProgressBar.parent().removeClass('hidden');
+    }
+
+    function showVideoProgress() {
+        submitBtn.attr("disabled", true);
+        videoProgressBar.css('width', '0%');
+        videoProgressBar.text('0%');
+        videoProgressBar.parent().removeClass('hidden');
+    }
+
+    function updateCoverImageProgress(value) {
         console.log("Progress: ",value);
-        progressBar.css('width', `${value}%`);
-        progressBar.text(`${value}%`);
+        coverProgressBar.css('width', `${value}%`);
+        coverProgressBar.text(`${value}%`);
+    }
+
+    function updateImageProgress(value) {
+        console.log("Progress: ",value);
+        imageProgressBar.css('width', `${value}%`);
+        imageProgressBar.text(`${value}%`);
+    }
+
+    function updateVideoProgress(value) {
+        console.log("Progress: ",value);
+        videoProgressBar.css('width', `${value}%`);
+        videoProgressBar.text(`${value}%`);
     }
 
     function previewFile(file, container) {
@@ -318,13 +425,11 @@
 
             container.append(content);
 
+            
             // Attach event listener to remove button
             container.find('.remove-preview-image').last().on('click', function() {
-                let fileName = $(this).data('file-name');                
-                let file = uploadedFiles.images.find(file => file.filename.toLowerCase() === fileName.toLowerCase());                                
-                // imageUploader.removeFile(file);
-                imageUploader.cancel();// resetting
-                // imageUploader.files = [];
+                let fileName = $(this).data('file-name');
+                imageUploader.cancel();// resetting            
                 sendRemoveRequest(fileName, 'image');
                 $(this).parent().remove();
             });
@@ -332,9 +437,37 @@
             // Attach event listener to remove button
             container.find('.remove-preview-video').last().on('click', function() {
                 let fileName = $(this).data('file-name');
+                videoUploader.cancel();// resetting
                 sendRemoveRequest(fileName, 'video');
                 $(this).parent().remove();
             });
+
+        };
+        reader.readAsDataURL(file.file);
+    }
+
+    function coverPreviewFile(file , container){
+        let reader = new FileReader();
+        reader.onload = function(e) {
+            let content;
+            if (file.file.type.startsWith('image/')) {
+                content = `
+                    <div class="relative" data-file-name="${file.fileName}">
+                        <img src="${e.target.result}" alt="Preview" class="w-56 h-56 bg-white object-cover rounded">
+                        <button type="button" class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center remove-preview-image" data-file-name="${file.fileName}">&times;</button>
+                    </div>`;
+            }            
+
+            container.empty();
+            container.append(content);
+            
+            // Attach event listener to remove button
+            container.find('.remove-preview-image').last().on('click', function() {
+                let fileName = $(this).data('file-name');
+                imageUploader.cancel();// resetting            
+                sendRemoveRequest(fileName, 'image');
+                $(this).parent().remove();
+            });            
 
         };
         reader.readAsDataURL(file.file);
@@ -377,6 +510,9 @@
     $('#myform').on('submit', function(event) {
         const form = $(this);
 
+        // disable submit button to avoid douple submit
+        submitBtn.removeAttr("disabled");
+
         // Remove any previously added hidden inputs to avoid duplicates
         form.find('input[type="hidden"]').remove();
 
@@ -398,15 +534,24 @@
                 .appendTo(form);
         });
 
-        event.preventDefault();
+        // add the token for csrf
+        $('<input>')
+                .attr('type', 'hidden')
+                .attr('name', '_token') // e.g., videos[0][file_id]
+                .val(`{{ csrf_token() }}`)
+                .appendTo(form);
+
+        
+
+        //event.preventDefault();
 
         // Optional: Prevent form submission if the array is empty
-        /**
-        if (uploadedFiles.images.length === 0 && uploadedFiles.videos.length === 0) {
+        
+        if (uploadedFiles.images.length === 0 ){// && uploadedFiles.videos.length === 0) {
             event.preventDefault();
-            alert('No data to submit!');
+            alert(`{{ __('upload_images') }}`);
         }
-        **/
+        
 
     });
 

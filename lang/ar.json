@@ -87,6 +87,7 @@
     "your_properties":"عقاراتك",
     "create_proprety":"إنشاء عقار",
 
+    "cover_img":"صورة الغلاف",
     "proprety_imgs":"صور العقار",
     "proprety_videos":"فديوهات العقار",
     "select_file":"اختر ملف",
@@ -102,5 +103,7 @@
     "mosque":"مسجد",
     "pool":"مسبح",
     "garden":"حديقة",
-    "hall":"صالة"
+    "hall":"صالة",
+    "upload_images" :"الرجاء رفع صور للعقار",
+    "upload_videos" : "الرجاء رفع فديوهات للعقار"
 }

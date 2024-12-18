@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use App\Models\Property\FilesModel;
 use App\Models\Property\PropertyModel;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
@@ -71,6 +72,59 @@ class PropertyController extends Controller
         // dd($image->getClientOriginalName());
         dd($response_img->json());*/
 
+        $images = [];
+        $videos = [];
+
+        $imageIds = $request->input('images'); // Example: [1, 2, 3]
+        $videoIds = $request->input('videos'); // Example: [1, 2, 3]
+
+        if($imageIds != null)
+        // Process the IDs (e.g., assign to the current user or create relationships)
+        foreach ($imageIds as $imageId) {
+
+            // Example: Mark each file as used
+            FilesModel::where('id', $imageId)->update(['used' => 1]);
+
+            $file = FilesModel::find($imageId); // Retrieve the record by ID
+
+            if ($file) {
+                $wp_id = $file->wp_id; // Access column data
+                
+                array_push($images,  $wp_id );
+
+                // Update the record
+                $file->update(['used' => 1]);                
+            }
+
+        }
+
+        if($videoIds != null)
+        foreach ($videoIds as $videoId) {
+            
+            // Example: Mark each file as used
+            FilesModel::where('id', $videoId)->update(['used' => 1]);
+
+            $file = FilesModel::find($videoId); // Retrieve the record by ID
+
+            if ($file) {
+                $wp_id = $file->wp_id; // Access column data
+                
+                array_push($videos,  $wp_id );
+
+                // Update the record
+                $file->update(['used' => 1]);                
+            }
+
+        }
+
+        
+        if($imageIds != null)
+        $images = array_map('intval', $images); // Ensure all values are integers
+
+        if($videoIds != null)
+        $videos = array_map('intval', $videos); // Ensure all values are integers
+
+        //save it on wp
         $response = Http::withHeaders([
             'Authorization' => 'Basic ' . base64_encode(env('WORDPRESS_USER') . ":" . env('WORDPRESS_KEY')),
         ])->post(env('WORDPRESS_API') . 'real_estate/', [
@@ -87,6 +141,8 @@ class PropertyController extends Controller
             'real_estate_price' =>  $request->price,
             'real_estate_location' => $request->location,
             'real_estate_city' => $request->city,
+            'real_estate_images' => $images,
+            'real_estate_videos' => $videos,
 
             'real_estate_kitchen' => $request->kitchen,
             'real_estate_toilets' => $request->bathrooms,
@@ -153,19 +209,21 @@ class PropertyController extends Controller
 
         if ($fileReceived->isFinished()) { // file uploading is complete / all chunks are uploaded
         
-            $file = $fileReceived->getFile(); // get file
+            $file      = $fileReceived->getFile(); // get file
+            
             $extension = $file->getClientOriginalExtension();
             $fileName  = str_replace('.'.$extension, '', $file->getClientOriginalName()); //file name without extenstion
             $fileName .= '_' . md5(time()) . '.' . $extension; // a unique file name
 
-            $disk = Storage::disk(config('filesystems.default'));
-            $path = $disk->putFileAs('uploads', $file, $fileName);
+            // save it localy
+            //$disk = Storage::disk(config('filesystems.default'));
+            //$path = $disk->putFileAs('uploads', $file, $fileName);
 
 
             // push it to storage server
             $response_img = Http::withHeaders([
                 'Authorization' => 'Basic ' . base64_encode(env('WORDPRESS_USER') . ":" . env('WORDPRESS_KEY')),                
-            ])->attach(    
+            ])->attach(
                 'file', // The file key as expected by WordPress
                 file_get_contents($file->getPathname()),
                 $file->getClientOriginalName()    
@@ -183,17 +241,25 @@ class PropertyController extends Controller
             $file_model->used     = 0;
             $file_model->save();
 
-            $file_id = $file_model->id; // Retrieve the ID of the newly inserted row
+            $file_id =  $file_model->id; // Retrieve the ID of the newly inserted row
 
             // delete chunked file
-            unlink($file->getPathname());
+            try {
+                if (file_exists($file->getPathname())) {
+                    unlink($file->getPathname());
+                }
+            } catch (Exception $e) {
+                // Log the error or handle it as needed
+                //print("Error deleting chunked file: " . $e->getMessage());
+            }
 
             return [
-                'path' => asset('storage/' . $path),
+                'path' => $data["source_url"], //asset('storage/' . $path), 
                 'filename' => $fileName,
                 'file_id' => $file_id,
                 'wp_id' => $data["id"]
             ];
+
         }
 
         // otherwise return percentage informatoin
