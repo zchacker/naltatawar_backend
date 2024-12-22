@@ -27,6 +27,8 @@ class PropertyModel extends Model
         'title',
         'description',
         'cover_img',
+        'images',
+        'videos',
         'type',
         'purpose',
         'license_no',

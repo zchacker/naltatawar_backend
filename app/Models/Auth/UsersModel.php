@@ -32,6 +32,7 @@ class UsersModel extends Authenticatable
         'parent',
         'email_verified_at',
         'code',
+        'items_added',
         'add_real_estate',
         'edit_real_estate',
         'billing'

@@ -34,7 +34,7 @@
                 </select>
 
                 <select name="purpose" id="purpose" class="input w-1/3">
-                    <option value="" disabled selected>الغرض</option>
+                    <!-- <option value="" disabled selected>الغرض</option> -->
                     <option value="25"> {{ __('sell') }} </option>
                     <option value="26"> {{ __('rent') }} </option>
                     <option value="27"> {{ __('invest') }} </option>
@@ -55,9 +55,9 @@
 
             <div class="flex gap-4">
 
-                <input type="text" name="city" class="input w-1/2" placeholder="المدينة" value="{{ old('city') }}" required />
+                <input type="text" name="city" class="input w-full" placeholder="المدينة" value="{{ old('city') }}" required />
 
-                <input type="text" name="location" class="input w-1/2" placeholder="احداثيات العقار على الخريطة" value="{{ old('location') }}" required />
+                <input type="text" name="location" id="location" class="hidden input w-1/2" placeholder="احداثيات العقار على الخريطة" value="{{ old('location') }}" required />
 
             </div>
 
@@ -74,6 +74,14 @@
                 <input type="number" name="bathrooms" class="input w-1/5" placeholder="عدد دورات المياه" value="{{ old('bathrooms') }}" required />
 
             </div>
+
+            <!-- map  -->
+            <label for="">احداثيات العقار على الخريطة</label>
+            <div id="map"></div>
+            {{-- 
+                <p>Latitude:  <span id="lat"></span></p>
+                <p>Longitude: <span id="lng"></span></p>
+            --}}
 
             <div class="my-8 flex flex-col gap-4">
                 <h2 class="font-bold text-md">المرافق</h2>
@@ -194,6 +202,7 @@
 <!-- <script src="{{ asset('assets/js/jQuery.min.js') }}"></script> -->
 <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
 <!-- Resumable JS -->
+<!-- https://github.com/23/resumable.js -->
 <script src="https://cdn.jsdelivr.net/npm/resumablejs@1.1.0/resumable.min.js"></script>
 
 <script type="text/javascript">
@@ -534,6 +543,13 @@
                 .appendTo(form);
         });
 
+        // add cover hidden id        
+        $('<input>')
+            .attr('type', 'hidden')
+            .attr('name', `cover_img`) // e.g., videos[0][file_id]
+            .val(coverImg.file_id)
+            .appendTo(form);
+
         // add the token for csrf
         $('<input>')
                 .attr('type', 'hidden')
@@ -556,6 +572,67 @@
     });
 
 
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key={{ env('MAP_KEY')}}&callback=initMap" async defer></script>
+<style>
+    #map {
+        height: 500px;
+        width: 100%;
+    }
+</style>
+
+<script>
+    function initMap() {
+        // Specify the initial center of the map
+        const initialPosition = { lat: 24.466667, lng: 54.366669 }; // Example coordinates
+
+        // Create a new map centered at the initial position
+        const map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 8,
+            center: initialPosition,
+        });
+
+        // Create a marker that will be placed at the clicked location
+        const marker = new google.maps.Marker({
+            position: initialPosition,
+            map: map,
+            draggable: true, // Allow the marker to be dragged
+        });
+
+        // Update the latitude and longitude display
+        function updateLatLngDisplay(latLng) {
+            if (latLng && typeof latLng.lat === 'function' && typeof latLng.lng === 'function') {
+                // document.getElementById("lat").textContent = latLng.lat().toFixed(6);
+                // document.getElementById("lng").textContent = latLng.lng().toFixed(6);
+                document.getElementById("location").value = latLng.lat().toFixed(6) + ',' + latLng.lng().toFixed(6);
+            } else {
+                console.error("Invalid latLng object:", latLng);
+            }
+        }
+
+        // Set initial display values
+        updateLatLngDisplay(initialPosition);
+
+        // Add a click event listener to the map
+        map.addListener("click", (event) => {
+            const clickedLocation = event.latLng;
+
+            // Move the marker to the clicked location
+            marker.setPosition(clickedLocation);
+
+            // Update the latitude and longitude display
+            updateLatLngDisplay(clickedLocation);
+        });
+
+        // Add a dragend event listener to the marker
+        marker.addListener("dragend", () => {
+            const newPosition = marker.getPosition();
+
+            // Update the latitude and longitude display
+            updateLatLngDisplay(newPosition);
+        });
+    }
 </script>
 
 @include('client.footer')

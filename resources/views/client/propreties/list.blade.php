@@ -3,10 +3,17 @@
 <div class="mt-4 flex flex-col gap-4">
     <h2 class="font-bold text-xl"> {{__('your_properties')}} </h2>  
     
+    @if( ($max_items - $items_used) > 0 )
     <a href="{{ route('client.property.create') }}" class="bg-cta px-8 py-2 items-center rounded-full flex gap-2 self-start">
         <img src="{{ asset('imgs/add.png') }}" alt="" class="w-[20px]" />
         <span class="font-medium text-white"> {{ __('create_proprety') }} </span>
     </a>
+    @else 
+    <a href="javascript:alert('{{ __('max_items_reached') }}')" class="bg-cta px-8 py-2 items-center rounded-full flex gap-2 self-start">
+        <img src="{{ asset('imgs/add.png') }}" alt="" class="w-[20px]" />
+        <span class="font-medium text-white"> {{ __('create_proprety') }} </span>
+    </a>
+    @endif
 
     <div>
         <form action="{{ route('client.property.list') }}" method="get" class="flex gap-2 items-center">

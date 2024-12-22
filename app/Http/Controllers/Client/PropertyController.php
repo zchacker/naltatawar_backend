@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Models\Auth\UsersModel;
 use App\Models\Property\FilesModel;
 use App\Models\Property\PropertyModel;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -18,7 +20,29 @@ class PropertyController extends Controller
 
     public function list(Request $request)
     {
-        $query      = PropertyModel::where('user_id', $request->user()->id);
+        // check if the user allowed to add a new item
+        $type       = $request->user()->account_type;
+        $max_items  = $request->user()->subscription->plan->items;
+        $items_used = 0;
+
+        if($type == 3) // this is agent sub user
+        {
+            // find who is parent account, to check and update data to it
+            $parent        = $request->user()->parent;
+            $manager_data  = UsersModel::where('id', $parent)->first();
+
+            if($manager_data)
+            {
+                $items_used = $manager_data->items_added;
+            }
+
+        }else{ // find account manager max items
+            
+            $items_used = $request->user()->items_added ;
+
+        }
+
+        $query  = PropertyModel::where('user_id', $request->user()->id);
 
          // Check if the "query" input exists
         if ($request->filled('query')) {
@@ -32,7 +56,7 @@ class PropertyController extends Controller
         $sum        = $query->count('id');
         $propreties = $query->paginate(50);
 
-        return view('client.propreties.list', compact('propreties'));
+        return view('client.propreties.list', compact('propreties' , 'max_items', 'items_used'));
     }
 
     // to check langaue 
@@ -46,6 +70,39 @@ class PropertyController extends Controller
     public function create_action(Request $request)
     {
 
+        // check if the user allowed to add a new item
+        $type       = $request->user()->account_type;
+        $max_items  = $request->user()->subscription->plan->items;
+
+        if($type == 3) // this is agent sub user
+        {
+            // find who is parent account, to check and update data to it
+            $parent        = $request->user()->parent;
+            $manager_data  = UsersModel::where('id', $parent)->first();
+
+            if($manager_data)
+            {
+                if($manager_data->items_added >= $max_items)
+                {
+
+                    return back()
+                        ->withErrors(['error' => __('max_items_reached')])
+                        ->withInput($request->all());
+                }
+            }
+
+        }else{ // find account manager max items
+
+            
+            if( $request->user()->items_added >= $max_items )
+            {
+
+                return back()
+                    ->withErrors(['error' => __('max_items_reached')])
+                    ->withInput($request->all());
+            }
+
+        }
 
         // Validate and store the uploaded image
         /*
@@ -72,11 +129,18 @@ class PropertyController extends Controller
         // dd($image->getClientOriginalName());
         dd($response_img->json());*/
 
+        
+
+        // cover image
+        $cover_img_id = $request->cover_img;
+        $cover_img_file = FilesModel::find($cover_img_id);
+        $cover_img = $cover_img_file->wp_id;// save this in wordpress api
+
         $images = [];
         $videos = [];
 
         $imageIds = $request->input('images'); // Example: [1, 2, 3]
-        $videoIds = $request->input('videos'); // Example: [1, 2, 3]
+        $videoIds = $request->input('videos'); // Example: [1, 2, 3]        
 
         if($imageIds != null)
         // Process the IDs (e.g., assign to the current user or create relationships)
@@ -125,6 +189,7 @@ class PropertyController extends Controller
         $videos = array_map('intval', $videos); // Ensure all values are integers
 
         //save it on wp
+        /*
         $response = Http::withHeaders([
             'Authorization' => 'Basic ' . base64_encode(env('WORDPRESS_USER') . ":" . env('WORDPRESS_KEY')),
         ])->post(env('WORDPRESS_API') . 'real_estate/', [
@@ -135,6 +200,7 @@ class PropertyController extends Controller
             'title' =>  $request->title,
             'real_estate_title' =>  $request->title,
             'real_estate_short__description' =>  $request->description,
+            'real_estate_cover_img' => $cover_img,
             'real_estate_space' =>  $request->space,
             'real_estate_neighborhood' =>  $request->title,
             'real_estate_rooms' =>  $request->rooms,
@@ -157,14 +223,54 @@ class PropertyController extends Controller
             
             'status' => 'pending'
         ]);
+        */
 
-        if ($response->successful()) {
-            $data = $response->json();
+        //if ($response->successful()) {
+        if (1 == 1) {
+            // Check the items added by account manager
+            DB::transaction(function() use ($request){
+
+                $type = $request->user()->account_type;
+
+                if($type == 3) // this is agent sub user
+                {
+                    // find who is parent account, to check and update data to it
+                    $parent = $request->user()->parent;
+
+                    $user = UsersModel::where('id', $parent)->lockForUpdate()->first();
+
+                    if ($user) {
+                        // Increment the items_added column
+                        $user->increment('items_added');// done !!
+                    } else {
+                        throw new \Exception('User not found.');
+                    }
+
+                }else{ // if i the manager
+
+                    $user_id = $request->user()->id;
+                    $user = UsersModel::where('id', $user_id)->lockForUpdate()->first();
+
+                    if ($user) {
+                        // Increment the items_added column
+                        $user->increment('items_added');// done !!
+                    } else {
+                        throw new \Exception('User not found.');
+                    }
+
+                }
+
+            });
+
+            //$data = $response->json();
             $proprety = PropertyModel::create([
                 "user_id" => $request->user()->id,
-                "property_number" => $data["id"],
+                "property_number" => 1,// $data["id"],
                 "title" => $request->title,                
-                "description" => $request->description,                
+                "description" => $request->description,   
+                "cover_img" => $cover_img_id,   
+                'images' => implode(',', $imageIds ?? []),
+                'videos' => implode(',', $videoIds ?? []),    
                 "type" => $request->type,                
                 "purpose" => $request->purpose,                
                 "license_no" => $request->license_no,                
@@ -190,13 +296,18 @@ class PropertyController extends Controller
             return back()->with(['success' => __('added_successfuly')]);
         } else {
 
-            dd($response->json());
+            //dd($response->json());
             return back()
-                ->withErrors(['error' => __('faild_to_save') . ' ' . $response->status()])
+                ->withErrors(['error' => __('faild_to_save')])//  . ' ' . $response->status()])
                 ->withInput($request->all());
         }
     }
 
+    
+    /**
+     * This related to this SDK
+     * https://github.com/pionl/laravel-chunk-upload
+     */
     public function uploadLargeFiles(Request $request) {
         
         $receiver = new FileReceiver('file', $request, HandlerFactory::classFromRequest($request));
