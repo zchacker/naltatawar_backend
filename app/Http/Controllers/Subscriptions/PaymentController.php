@@ -50,6 +50,11 @@ class PaymentController extends Controller
             $data = $response->json();
             // Handle the response data
 
+            // read plan data 
+            $planId     = Session::pull('plan_id'); // use ::pull to remove it not use ( ::get ...)
+            $plan_data  = PlansModel::orderByDesc('created_at')->where('id', $planId)->first();
+            
+
             // if payment not paid go to error page
             if($data['status'] != 'paid') 
             {
@@ -57,11 +62,12 @@ class PaymentController extends Controller
             }
 
             // create model object
-            $payment = new PaymentsModel();
-            $payment->payment_id = $data['id'];
-            $payment->user_id    = $request->user()->id;
-            $payment->amount     = doubleval($data['amount'] / 100);
-            $payment->status     = $data['status'];
+            $payment                = new PaymentsModel();
+            $payment->payment_id    = $data['id'];
+            $payment->user_id       = $request->user()->id;
+            $payment->amount        = doubleval($data['amount'] / 100);
+            $payment->status        = $data['status'];
+            $payment->description   = $plan_data['name']. ' - ' . $plan_data['billing_cycle'];
             
 
             if (isset($data['source'])) {
@@ -81,12 +87,10 @@ class PaymentController extends Controller
 
             }
 
-            $payment->save(); // save payment
-
-            // read plan data 
-            $planId    = Session::pull('plan_id'); // use ::pull to remove it not use ( ::get ...)
-            $plan_data = PlansModel::orderByDesc('created_at')->where('id', $planId)->first();
             
+            $payment->save(); // save payment
+            
+
             //save the subscription
             $subscription = new SubscriptionsModel();
 

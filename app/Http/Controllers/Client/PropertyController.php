@@ -188,8 +188,7 @@ class PropertyController extends Controller
         if($videoIds != null)
         $videos = array_map('intval', $videos); // Ensure all values are integers
 
-        //save it on wp
-        /*
+        //save it on wp        
         $response = Http::withHeaders([
             'Authorization' => 'Basic ' . base64_encode(env('WORDPRESS_USER') . ":" . env('WORDPRESS_KEY')),
         ])->post(env('WORDPRESS_API') . 'real_estate/', [
@@ -223,10 +222,9 @@ class PropertyController extends Controller
             
             'status' => 'pending'
         ]);
-        */
+        
 
-        //if ($response->successful()) {
-        if (1 == 1) {
+        if ($response->successful()) {        
             // Check the items added by account manager
             DB::transaction(function() use ($request){
 
@@ -262,10 +260,10 @@ class PropertyController extends Controller
 
             });
 
-            //$data = $response->json();
+            $data = $response->json();
             $proprety = PropertyModel::create([
                 "user_id" => $request->user()->id,
-                "property_number" => 1,// $data["id"],
+                "property_number" => $data["id"],
                 "title" => $request->title,                
                 "description" => $request->description,   
                 "cover_img" => $cover_img_id,   
@@ -298,7 +296,7 @@ class PropertyController extends Controller
 
             //dd($response->json());
             return back()
-                ->withErrors(['error' => __('faild_to_save')])//  . ' ' . $response->status()])
+                ->withErrors(['error' => __('faild_to_save') . ' ' . $response->status()])
                 ->withInput($request->all());
         }
     }

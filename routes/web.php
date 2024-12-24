@@ -65,6 +65,7 @@ Route::group(['middleware' => ['auth:agent']], function () {
     
     // payments
     Route::get('/payments/list', [\App\Http\Controllers\Client\Billing\PaymentsController::class, 'payments'])->name('client.payments');
+    Route::get('/payments/invoice/{id}', [\App\Http\Controllers\Client\Billing\PaymentsController::class, 'invoice'])->name('client.invoice');
     
     // support
     Route::get('/support/list', [\App\Http\Controllers\Client\SupportController::class, 'list'])->name('client.support.list');

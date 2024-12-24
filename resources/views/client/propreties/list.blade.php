@@ -9,7 +9,7 @@
         <span class="font-medium text-white"> {{ __('create_proprety') }} </span>
     </a>
     @else 
-    <a href="javascript:alert('{{ __('max_items_reached') }}')" class="bg-cta px-8 py-2 items-center rounded-full flex gap-2 self-start">
+    <a href="javascript:no_add_item()" class="bg-cta px-8 py-2 items-center rounded-full flex gap-2 self-start">
         <img src="{{ asset('imgs/add.png') }}" alt="" class="w-[20px]" />
         <span class="font-medium text-white"> {{ __('create_proprety') }} </span>
     </a>
@@ -52,5 +52,16 @@
     </div>
 
 </div>
+
+<script>
+    function no_add_item(){
+        Swal.fire({
+            title: 'خطأ',
+            text: `{{ __('max_items_reached') }}`,
+            icon: 'error',
+            confirmButtonText: `{{ __('ok') }}`
+        });
+    }
+</script>
 
 @include('client.footer')

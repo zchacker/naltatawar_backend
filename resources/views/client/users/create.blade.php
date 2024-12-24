@@ -17,7 +17,7 @@
         </div>
         @endif
 
-        <form action="{{ route('client.users.create.action') }}" method="post" class="w-full flex flex-col gap-4">
+        <form action="{{ route('client.users.create.action') }}" id="myform" method="post" class="w-full flex flex-col gap-4">
             @csrf    
 
             <input type="text" name="name" class="input w-full" placeholder="{{__('name')}}" required />
@@ -54,5 +54,7 @@
     </div>
 
 </div>
+
+
 
 @include('client.footer')

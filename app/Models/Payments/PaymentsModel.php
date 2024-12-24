@@ -25,7 +25,8 @@ class PaymentsModel extends Model
         'amount',
         'status',
         'card_type',
-        'card_digits'
+        'card_digits',
+        'description'
     ];
 
     /**

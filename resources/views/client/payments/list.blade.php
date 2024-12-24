@@ -20,11 +20,11 @@
             <tr class="odd:bg-white even:bg-gray-100  border-b border-gray-100">
                 <td class="px-6 py-4"> {{ $contact->id }} </td>
                 <td class="px-6 py-4"> {{ __($contact->status) }} </td>
-                <td class="px-6 py-4"> {{ $contact->amount }} </td>
+                <td class="px-6 py-4"> SAR {{ $contact->amount }} </td>
                 <td class="px-6 py-4"> {{ $contact->payment_id }} </td>
                 <td class="px-6 py-4"> {{ $contact->created_at }} </td>
                 <td class="px-6 py-4 flex gap-4">
-                    <a href="#" class="text-blue-500 underline"> {{__('view')}} </a>                    
+                    <a href="{{ route('client.invoice' , $contact->id)  }}" class="text-blue-500 underline"> {{__('view')}} </a>                    
                 </td>
             </tr>
             @endforeach

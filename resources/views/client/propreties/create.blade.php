@@ -57,7 +57,7 @@
 
                 <input type="text" name="city" class="input w-full" placeholder="المدينة" value="{{ old('city') }}" required />
 
-                <input type="text" name="location" id="location" class="hidden input w-1/2" placeholder="احداثيات العقار على الخريطة" value="{{ old('location') }}" required />
+                <input type="text" name="location" id="location" class="hidden input w-1/2" placeholder="احداثيات العقار على الخريطة" value="{{ old('location') ?? '24.740325969940773,46.714341351147276' }}"  />
 
             </div>
 
@@ -207,7 +207,7 @@
 
 <script type="text/javascript">
 
-    var coverImg;
+    var coverImg = 0;
     let uploadedFiles = {
         images: [],
         videos: []
@@ -361,15 +361,33 @@
     });
 
     coverImageUploader.on('fileError', function(file, response) {
-        alert('Image uploading error.');
+        // alert('Image uploading error.');
+        Swal.fire({
+            title: 'خطأ',
+            text: `{{ __('error_uploading_img') }}`,
+            icon: 'error',
+            confirmButtonText: `{{ __('ok') }}`
+        });
     });
 
     imageUploader.on('fileError', function(file, response) {
-        alert('Image uploading error.');
+        // alert('Image uploading error.');
+        Swal.fire({
+            title: 'خطأ',
+            text: `{{ __('error_uploading_img') }}`,
+            icon: 'error',
+            confirmButtonText: `{{ __('ok') }}`
+        });
     });
 
     videoUploader.on('fileError', function(file, response) {
-        alert('Video uploading error.');
+        // alert('Video uploading error.');
+        Swal.fire({
+            title: 'خطأ',
+            text: `{{ __('error_uploading_video') }}`,
+            icon: 'error',
+            confirmButtonText: `{{ __('ok') }}`
+        });
     });
 
     function showCoverImageProgress() {
@@ -520,7 +538,7 @@
         const form = $(this);
 
         // disable submit button to avoid douple submit
-        submitBtn.removeAttr("disabled");
+        submitBtn.attr("disabled", true);
 
         // Remove any previously added hidden inputs to avoid duplicates
         form.find('input[type="hidden"]').remove();
@@ -558,14 +576,23 @@
                 .appendTo(form);
 
         
-
-        //event.preventDefault();
+        console.log(uploadedFiles.images.length);
+        event.preventDefault(); // Prevent the default behavior
+        event.stopPropagation(); // Stop other event handlers
 
         // Optional: Prevent form submission if the array is empty
         
         if (uploadedFiles.images.length === 0 ){// && uploadedFiles.videos.length === 0) {
+            submitBtn.removeAttr("disabled");
             event.preventDefault();
-            alert(`{{ __('upload_images') }}`);
+
+            Swal.fire({
+                title: 'خطأ',
+                text: `{{ __('upload_images') }}`,
+                icon: 'error',
+                confirmButtonText: `{{ __('ok') }}`
+            });
+            //alert(`{{ __('upload_images') }}`);
         }
         
 
@@ -574,7 +601,7 @@
 
 </script>
 
-<script src="https://maps.googleapis.com/maps/api/js?key={{ env('MAP_KEY')}}&callback=initMap" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{ env('MAP_KEY')}}&callback=initMap" async ></script>
 <style>
     #map {
         height: 500px;
@@ -583,13 +610,15 @@
 </style>
 
 <script>
-    function initMap() {
-        // Specify the initial center of the map
-        const initialPosition = { lat: 24.466667, lng: 54.366669 }; // Example coordinates
+    async function initMap() {
+        // Specify the initial center of the map        
+        const initialPosition = { lat: 24.740325969940773, lng: 46.714341351147276 }; // Example coordinates
+
+        const { Map } = await google.maps.importLibrary("maps");
 
         // Create a new map centered at the initial position
-        const map = new google.maps.Map(document.getElementById("map"), {
-            zoom: 8,
+        const map = new Map(document.getElementById("map"), {
+            zoom: 15,
             center: initialPosition,
         });
 
@@ -601,7 +630,7 @@
         });
 
         // Update the latitude and longitude display
-        function updateLatLngDisplay(latLng) {
+        function updateLatLngDisplay(latLng) {                        
             if (latLng && typeof latLng.lat === 'function' && typeof latLng.lng === 'function') {
                 // document.getElementById("lat").textContent = latLng.lat().toFixed(6);
                 // document.getElementById("lng").textContent = latLng.lng().toFixed(6);
