@@ -4,6 +4,8 @@
     "name":"الاسم",
     "phone":"الهاتف",
     "email":"الايميل",
+    "current_password":"كلمة السر الحالية",
+    "new_password":"كلمة السر الجديدة",
     "password":"كلمة السر",
     "re-password":"إعادة كلمة المرور",
     "register_account": "تسجيل الحساب",
@@ -114,5 +116,10 @@
     "error_uploading_img":"خطأ اثناء رفع الصورة",
     "error_uploading_video":"خطأ اثناء رفع الفديو",
 
-    "ok":"حسنا"
+    "ok":"حسنا",
+
+    "update_data":"تحديث البيانات",
+    "personal_data":"البيانات الشخصية",
+    "update_password":"تحديث كلمة المرور",
+    "new_password_not_match":"كلمة المرور الجديدة لا تطابق"
 }

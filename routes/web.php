@@ -74,5 +74,9 @@ Route::group(['middleware' => ['auth:agent']], function () {
     Route::get('/support/update/{id}', [\App\Http\Controllers\Client\SupportController::class, 'update'])->name('client.support.update');
     Route::post('/support/update/action/{id}', [\App\Http\Controllers\Client\SupportController::class, 'update_action'])->name('client.support.update.action');
     
+    Route::get('/settings', [\App\Http\Controllers\Shared\SettingsController::class, 'client_data'])->name('client.settings');
+    Route::post('/settings/update/profile', [\App\Http\Controllers\Shared\SettingsController::class, 'update_data_action'])->name('client.settings.update.profile');
+    Route::post('/settings/update/password', [\App\Http\Controllers\Shared\SettingsController::class, 'update_password_action'])->name('client.settings.update.password');
+
     Route::get('/logout', [\App\Http\Controllers\Auth\LogoutController::class, 'agent_logout'])->name('client.logout');
 });

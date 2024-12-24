@@ -78,7 +78,7 @@
             </div>
         </a>
 
-        <a href="#">
+        <a href="{{ route('client.settings') }}">
             <div class="flex items-center gap-4 border-t-[1px] border-white text-white p-2 py-3 bg-secondary hover:bg-primary">
                 <img src="{{ asset('imgs/settings.png') }}" alt="" class="h-[30px]">
                 <h3> الاعدادات </h3>
