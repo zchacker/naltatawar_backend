@@ -20,9 +20,9 @@
         <form action="{{ route('client.property.create.action') }}" method="post" id="myform" enctype="multipart/form-data" class="w-full flex flex-col gap-4">
             @csrf
 
-            <input type="text" name="title" class="input" placeholder="عنوان العقار" value="{{ old('title') }}" required />
+            <input type="text" name="title" class="input" placeholder="عنوان العقار" value="{{ old('title') }}" required autocomplete="off" />
 
-            <textarea name="description" class="input" id="description" cols="30" rows="10" placeholder="وصف للعقار" required>{{ old('description') }}</textarea>
+            <textarea name="description" class="input" id="description" cols="30" rows="10" placeholder="وصف للعقار" required autocomplete="off">{{ old('description') }}</textarea>
 
             <div class="flex gap-4 items-stretch justify-stretch">
 
@@ -40,7 +40,7 @@
                     <option value="27"> {{ __('invest') }} </option>
                 </select>
 
-                <input type="text" name="license_no" class="input w-1/3" placeholder=" رقم الترخيص" value="{{ old('license_no') }}" required />
+                <input type="text" name="license_no" class="input w-1/3" placeholder=" رقم الترخيص" value="{{ old('license_no') }}" required autocomplete="off" />
 
             </div>
 
@@ -51,11 +51,11 @@
             </div>
             --}}            
 
-            <input type="text" name="neighborhood" class="input" placeholder="اسم الحي" value="{{ old('neighborhood') }}" required />
+            <input type="text" name="neighborhood" class="input" placeholder="اسم الحي" value="{{ old('neighborhood') }}" required autocomplete="off" />
 
             <div class="flex gap-4">
 
-                <input type="text" name="city" class="input w-full" placeholder="المدينة" value="{{ old('city') }}" required />
+                <input type="text" name="city" class="input w-full" placeholder="المدينة" value="{{ old('city') }}" required autocomplete="off" />
 
                 <input type="text" name="location" id="location" class="hidden input w-1/2" placeholder="احداثيات العقار على الخريطة" value="{{ old('location') ?? '24.740325969940773,46.714341351147276' }}"  />
 
@@ -63,25 +63,21 @@
 
             <div class="flex gap-4">
 
-                <input type="number" name="space" class="input w-1/5" placeholder="المساحة" value="{{ old('space') }}" required />
+                <input type="number" name="space" class="input w-1/5" placeholder="المساحة" value="{{ old('space') }}" required autocomplete="off" />
 
-                <input type="number" name="price" class="input w-1/5" placeholder="السعر" value="{{ old('price') }}" required />
+                <input type="number" name="price" class="input w-1/5" placeholder="السعر" value="{{ old('price') }}" required autocomplete="off" />
 
-                <input type="number" name="rooms" class="input w-1/5" placeholder="عدد الغرف" value="{{ old('rooms') }}" required />
+                <input type="number" name="rooms" class="input w-1/5" placeholder="عدد الغرف" value="{{ old('rooms') }}" required autocomplete="off" />
 
-                <input type="number" name="kitchen" class="input w-1/5" placeholder="{{__('kitchen')}}" value="{{ old('kitchen') }}" required />
+                <input type="number" name="kitchen" class="input w-1/5" placeholder="{{__('kitchen')}}" value="{{ old('kitchen') }}" required autocomplete="off" />
 
-                <input type="number" name="bathrooms" class="input w-1/5" placeholder="عدد دورات المياه" value="{{ old('bathrooms') }}" required />
+                <input type="number" name="bathrooms" class="input w-1/5" placeholder="عدد دورات المياه" value="{{ old('bathrooms') }}" required autocomplete="off" />
 
             </div>
 
             <!-- map  -->
             <label for="">احداثيات العقار على الخريطة</label>
-            <div id="map"></div>
-            {{-- 
-                <p>Latitude:  <span id="lat"></span></p>
-                <p>Longitude: <span id="lng"></span></p>
-            --}}
+            <div id="map"></div>           
 
             <div class="my-8 flex flex-col gap-4">
                 <h2 class="font-bold text-md">المرافق</h2>
@@ -131,6 +127,7 @@
                 </div>
             </div>
 
+            <!-- files section  -->
             <div class="flex flex-col items-start justify-start">
                 <div class="w-full bg-white ">
 
@@ -142,13 +139,14 @@
                         <div id="upload-container" class="text-center mb-4">
                         </div>
 
-                        <div class="progress mt-4 hidden my-12">
-                            <div class="bg-green-600 h-6 text-center text-white leading-6 rounded-md" style="width: 0%" id="coverImageProgressBar">0%</div>
-                        </div>
-
-                        <div class="flex justify-start items-center gap-4 mt-4">
+                        
+                        <div class="flex justify-start items-center gap-4 mt-2">
                             <button id="coverImage" type="button" class="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-400">{{ __('select_file') }}</button>
                             <p>{{ __('cover_img') }}</p>
+                        </div>
+                        
+                        <div class="progress hidden mt-8">
+                            <div class="bg-green-600 h-6 text-center text-white leading-6 rounded-md" style="width: 0%" id="coverImageProgressBar">0%</div>
                         </div>
 
                         <h6 class="text-gray-600 font-semibold mt-6">{{ __('cover_img') }}</h6>
@@ -156,13 +154,14 @@
                             <img src="{{ asset('imgs/print_photo.png') }}" class="w-[150px] absolute left-[50%] top-5" alt="" id="cover_img_placeholder" />
                         </div>
 
-                        <div class="progress mt-4 hidden my-12">
-                            <div class="bg-green-600 h-6 text-center text-white leading-6 rounded-md" style="width: 0%" id="imageProgressBar">0%</div>
-                        </div>
 
                         <div class="flex justify-start items-center gap-4 mt-8">
                             <button id="browseImages" type="button" class="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-400">{{ __('select_file') }}</button>
                             <p>{{ __('proprety_imgs') }}</p>
+                        </div>
+
+                        <div class="progress mt-4 hidden">
+                            <div class="bg-green-600 h-6 text-center text-white leading-6 rounded-md" style="width: 0%" id="imageProgressBar">0%</div>
                         </div>
 
                         <h6 class="text-gray-600 font-semibold mt-6">{{ __('proprety_imgs') }}</h6>
@@ -170,13 +169,15 @@
                             <img src="{{ asset('imgs/print_photo.png') }}" class="w-[150px] absolute left-[50%] top-5" alt="" id="img_placeholder" />
                         </div>
 
-                        <div class="progress mt-4 hidden my-12">
-                            <div class="bg-green-600 h-6 text-center text-white leading-6 rounded-md" style="width: 0%" id="videoProgressBar">0%</div>
-                        </div>
+                        
 
                         <div class="flex justify-start items-center gap-4 mt-8">
                             <button id="browseVideos" type="button" class="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-400">{{ __('select_file') }}</button>
                             <p>{{ __('proprety_videos') }}</p>
+                        </div>
+
+                        <div class="progress mt-4 hidden">
+                            <div class="bg-green-600 h-6 text-center text-white leading-6 rounded-md" style="width: 0%" id="videoProgressBar">0%</div>
                         </div>
 
                         <h6 class="text-gray-600 font-semibold mt-6">{{ __('proprety_videos') }}</h6>
@@ -236,7 +237,7 @@
         query: {
             _token: '{{ csrf_token() }}'
         },
-        fileType: ['jpg', 'png', 'jpeg'],
+        fileType: ['jpg', 'png', 'jpeg', 'webp'],
         headers: {
             'Accept': 'application/json'
         },
@@ -246,12 +247,14 @@
         //chunkSize: 1 * 1024 * 1024, // 1 MB
     });
 
+    // watch this tutorial for any docs
+    // https://shouts.dev/articles/laravel-upload-large-file-with-resumablejs-and-laravel-chunk-upload
     let imageUploader = new Resumable({
         target: `{{ route('client.property.file.upload') }}`,
         query: {
             _token: '{{ csrf_token() }}'
         },
-        fileType: ['jpg', 'png', 'jpeg'],
+        fileType: ['jpg', 'png', 'jpeg', 'webp'],
         headers: {
             'Accept': 'application/json'
         },
@@ -576,9 +579,9 @@
                 .appendTo(form);
 
         
-        console.log(uploadedFiles.images.length);
-        event.preventDefault(); // Prevent the default behavior
-        event.stopPropagation(); // Stop other event handlers
+        // console.log(uploadedFiles.images.length);
+        // event.preventDefault(); // Prevent the default behavior
+        // event.stopPropagation(); // Stop other event handlers
 
         // Optional: Prevent form submission if the array is empty
         

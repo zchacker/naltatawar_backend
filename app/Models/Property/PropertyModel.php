@@ -47,6 +47,7 @@ class PropertyModel extends Model
         'mosque',
         'pool',
         'garden',
+        'status'
     ];
 
     /**

@@ -22,11 +22,11 @@
             <form action="{{ route('client.settings.update.profile') }}" id="myform" method="post" class="w-full flex flex-col gap-4">
                 @csrf
 
-                <input type="text" name="name" class="input w-full" placeholder="{{__('name')}}" required />
+                <input type="text" name="name" class="input w-full" placeholder="{{__('name')}}" value="{{ old('name') ?? $user->name }}" required autocomplete="off"/>
 
-                <input type="tel" name="phone" dir="rtl" class="input w-full" placeholder="{{__('phone')}}" required />
+                <input type="tel" name="phone" dir="rtl" class="input w-full" placeholder="{{__('phone')}}" value="{{ old('phone') ?? $user->phone }}" required autocomplete="off"/>
 
-                <input type="email" name="email" class="input w-full" placeholder="{{__('email')}}" required />
+                <input type="email" name="email" class="input w-full" placeholder="{{__('email')}}" value="{{ old('email') ?? $user->email }}" required autocomplete="off"/>
 
                 <button type="submit" class="submit_btn self-start">{{__('save')}}</button>
             </form>

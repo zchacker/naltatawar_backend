@@ -2,14 +2,14 @@
 
 <div class="mt-4 flex flex-col gap-8">
     <h2 class="font-bold text-xl"> {{__('users')}} </h2>
-
+    
     @if( ($max_user - $sum) > 0 )
     <a href="{{ route('client.users.create.form') }}" class="bg-cta px-8 py-2 items-center rounded-full flex gap-2 self-start">
         <img src="{{ asset('imgs/add.png') }}" alt="" class="w-[20px]" />
         <span class="font-medium text-white"> {{__('add_new')}} </span>
     </a>
     @else
-    <a href="javascript:alert('{{ __('max_users_reached') }}')" class="bg-cta px-8 py-2 items-center rounded-full flex gap-2 self-start">
+    <a href="javascript:max_users()" class="bg-cta px-8 py-2 items-center rounded-full flex gap-2 self-start">
         <img src="{{ asset('imgs/add.png') }}" alt="" class="w-[20px]" />
         <span class="font-medium text-white"> {{__('add_new')}} </span>
     </a>
@@ -37,7 +37,7 @@
                 <td class="px-6 py-4"> {{ $contact->created_at }} </td>
                 <td class="px-6 py-4 flex gap-4">
                     <a href="{{ route('client.users.edit.form' , $contact->id) }}" class="text-blue-500 underline"> {{__('edit')}} </a>
-                    <form action="{{ route('client.users.delete.action' , $contact->id) }}" method="POST" onsubmit="return confirmDelete()">
+                    <form action="{{ route('client.users.delete.action' , $contact->id) }}" method="POST" onsubmit="return confirmDelete(event)">
                         @method('DELETE')
                         @csrf
 
@@ -54,7 +54,6 @@
         </tbody>
     </table>
 
-
     <div class="text-left mt-10" dir="rtl">
         {{ $contacts->onEachSide(5)->links('pagination::tailwind') }}
     </div>
@@ -62,8 +61,37 @@
 
 
 <script>
-    function confirmDelete() {
-        return confirm(" {{__('delete_confirmation')}}" );        
+    function confirmDelete(event) {
+        //return confirm(" {{__('delete_confirmation')}}" );        
+
+        event.preventDefault(); // Prevent form submission initially
+        Swal.fire({
+            title: "{{ __('delete_confirmation') }}",
+            //text: "Are you sure you want to delete this?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "{{ __('comfirm') }}",
+            cancelButtonText: "{{ __('retreat') }}",
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Submit the form programmatically if confirmed
+                event.target.submit();
+            } else {
+                console.log("User cancelled deletion.");
+            }
+        });
+    }
+
+    function max_users(){
+        Swal.fire({
+            title: 'خطأ',
+            text: `{{ __('max_users_reached') }}`,
+            icon: 'error',
+            confirmButtonText: `{{ __('ok') }}`
+        });
     }
 </script>
 

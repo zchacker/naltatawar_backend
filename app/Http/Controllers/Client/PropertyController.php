@@ -102,34 +102,7 @@ class PropertyController extends Controller
                     ->withInput($request->all());
             }
 
-        }
-
-        // Validate and store the uploaded image
-        /*
-        $request->validate([
-            'image' => 'required|file|mimes:jpg,jpeg,png,gif|max:5120', // Limit size to 5MB
-        ]);
-
-        // upload image
-        // Get the uploaded file
-        $image = $request->file('image');
-
-        $response_img = Http::withHeaders([
-            'Authorization' => 'Basic ' . base64_encode(env('WORDPRESS_USER') . ":" . env('WORDPRESS_KEY')),
-            //'Content-Disposition' => 'attachment; filename=' . $image->getClientOriginalName(),
-            //'Content-Type' => "multipart/form-data;".$image->getMimeType(),
-        ])->attach(
-
-            'file', // The file key as expected by WordPress
-            file_get_contents($image->getPathname()),
-            $image->getClientOriginalName()
-
-        )->post(env('WORDPRESS_API') . "media");
-
-        // dd($image->getClientOriginalName());
-        dd($response_img->json());*/
-
-        
+        }    
 
         // cover image
         $cover_img_id = $request->cover_img;
@@ -180,13 +153,14 @@ class PropertyController extends Controller
             }
 
         }
-
         
         if($imageIds != null)
         $images = array_map('intval', $images); // Ensure all values are integers
 
         if($videoIds != null)
         $videos = array_map('intval', $videos); // Ensure all values are integers
+
+        // sometimes the wordpress API not response !!
 
         //save it on wp        
         $response = Http::withHeaders([
@@ -287,7 +261,9 @@ class PropertyController extends Controller
                 "school" => $request->has('school') ? 1 : 0,                
                 "mosque" => $request->has('mosque') ? 1 : 0,                
                 "pool" => $request->has('pool') ? 1 : 0,                
-                "garden" => $request->has('garden') ? 1 : 0,                
+                "garden" => $request->has('garden') ? 1 : 0, 
+                
+                'status' => 'pending'
             ]);
 
             
@@ -325,8 +301,8 @@ class PropertyController extends Controller
             $fileName .= '_' . md5(time()) . '.' . $extension; // a unique file name
 
             // save it localy
-            //$disk = Storage::disk(config('filesystems.default'));
-            //$path = $disk->putFileAs('uploads', $file, $fileName);
+            $disk = Storage::disk(config('filesystems.default'));
+            $path = $disk->putFileAs('uploads', $file, $fileName);
 
 
             // push it to storage server
@@ -353,14 +329,14 @@ class PropertyController extends Controller
             $file_id =  $file_model->id; // Retrieve the ID of the newly inserted row
 
             // delete chunked file
-            try {
-                if (file_exists($file->getPathname())) {
-                    unlink($file->getPathname());
-                }
-            } catch (Exception $e) {
-                // Log the error or handle it as needed
-                //print("Error deleting chunked file: " . $e->getMessage());
-            }
+            // try {
+            //     if (file_exists($file->getPathname())) {
+            //         unlink($file->getPathname());
+            //     }
+            // } catch (Exception $e) {
+            //     // Log the error or handle it as needed
+            //     print("Error deleting chunked file: " . $e->getMessage());
+            // }
 
             return [
                 'path' => $data["source_url"], //asset('storage/' . $path), 

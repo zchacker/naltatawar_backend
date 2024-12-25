@@ -25,6 +25,7 @@
     "added_successfuly":"تمت الاضافة بنجاح",
     "updated_successfuly":"تم التحديث بنجاح",
     "faild_to_save":"فشل حفظ البيانات",
+    "unknown_error":"خطأ غير معروف",
     
     "name_required": "يجب كتابة الاسم",
     "message_required": "يجب كتابة الرسالة",
@@ -93,6 +94,12 @@
     "your_properties":"عقاراتك",
     "create_proprety":"إنشاء عقار",
 
+    "remain_this_month":"متبقي لهذا الشهر",
+    "pending":"معلق",
+    "rejected":"مرفوض",
+    "published":"منشور",
+    "proprety_pending":"العقار بانتظار التحقق",
+
     "cover_img":"صورة الغلاف",
     "proprety_imgs":"صور العقار",
     "proprety_videos":"فديوهات العقار",
@@ -121,5 +128,9 @@
     "update_data":"تحديث البيانات",
     "personal_data":"البيانات الشخصية",
     "update_password":"تحديث كلمة المرور",
-    "new_password_not_match":"كلمة المرور الجديدة لا تطابق"
+    "new_password_not_match":"كلمة المرور الجديدة لا تطابق",
+    "wrong-password":"كلمة السر الحالية خطأ",
+
+    "retreat":"تراجع",
+    "comfirm":"تأكيد"
 }

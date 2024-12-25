@@ -24,7 +24,7 @@
     </div>
 
     <div class="mt-0 flex flex-col gap-4">
-        
+        <span> {{ __('your_properties') }} ({{ $items_used }}) - {{__('remain_this_month')}} : {{ $max_items - $items_used }} </span>
         <table class="table-fixed rounded-md overflow-hidden">
             <thead class="text-md text-gray-700 uppercase bg-blue-200">
                 <tr>
@@ -33,6 +33,8 @@
                     <th scope="col" class="px-6 py-3">المدينة</th>
                     <th scope="col" class="px-6 py-3">السعر</th>
                     <th scope="col" class="px-6 py-3">اضيف بواسطة</th>
+                    <th scope="col" class="px-6 py-3">معاينة</th>
+                    <th scope="col" class="px-6 py-3">الحالة</th>
                     <th scope="col" class="px-6 py-3">تاريخ الاضافة</th>
                 </tr>
             </thead>
@@ -44,6 +46,14 @@
                     <td class="px-6 py-4"> {{ $proprety->city }} </td>
                     <td class="px-6 py-4"> {{ $proprety->price }} </td>
                     <td class="px-6 py-4"> {{ $proprety->add_by()->name }} </td>
+                    <td class="px-6 py-4"> 
+                        @if($proprety->status == 'pending')
+                        <a href="javascript:not_published()" class="text-blue-500">معاينة</a>
+                        @elseif($proprety->status == 'published')
+                        <a href="https://naltatawar.com/?post_type=real_estate&p={{ $proprety->property_number }}&preview=false" class="text-blue-500" target="_blank">معاينة</a>
+                        @endif
+                    </td>
+                    <td class="px-6 py-4"> {{ __($proprety->status) }} </td>
                     <td class="px-6 py-4"> {{ $proprety->created_at }} </td>
                 </tr>
                 @endforeach        
@@ -59,6 +69,15 @@
             title: 'خطأ',
             text: `{{ __('max_items_reached') }}`,
             icon: 'error',
+            confirmButtonText: `{{ __('ok') }}`
+        });
+    }
+
+    function not_published(){
+        Swal.fire({
+            title: `{{ __('proprety_pending') }}`,
+            //text: `{{ __('proprety_pending') }}`,
+            icon: 'warning',
             confirmButtonText: `{{ __('ok') }}`
         });
     }
