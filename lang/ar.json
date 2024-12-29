@@ -56,7 +56,9 @@
     "permissions":"الصلاحيات",
     "add_real_estate":"إضافة عقارات",
     "edit_real_estate":"تعديل العقارات",
+    "delete_real_estate":"حذف العقارات",
     "billing":"الفوترة",
+    "can_show_contact":"طلبات التواصل",
     "leave_empty_not_change_password":"اتركه فارغ لعدم تغيير كلمة السر",
 
     "delete_confirmation":"تأكيد الحذف ؟",

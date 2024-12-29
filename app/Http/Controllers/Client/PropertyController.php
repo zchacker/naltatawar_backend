@@ -42,7 +42,7 @@ class PropertyController extends Controller
 
         }
 
-        $query  = PropertyModel::where('user_id', $request->user()->id);
+        $query  = PropertyModel::where('parent_id', $request->user()->id);
 
          // Check if the "query" input exists
         if ($request->filled('query')) {
@@ -63,7 +63,6 @@ class PropertyController extends Controller
     // https://polylang.pro/doc/rest-api/
     public function create(Request $request)
     {
-
         return view('client.propreties.create');
     }
 
@@ -237,6 +236,7 @@ class PropertyController extends Controller
             $data = $response->json();
             $proprety = PropertyModel::create([
                 "user_id" => $request->user()->id,
+                "parent_id" => $request->user()->id,                
                 "property_number" => $data["id"],
                 "title" => $request->title,                
                 "description" => $request->description,   
@@ -329,14 +329,14 @@ class PropertyController extends Controller
             $file_id =  $file_model->id; // Retrieve the ID of the newly inserted row
 
             // delete chunked file
-            // try {
-            //     if (file_exists($file->getPathname())) {
-            //         unlink($file->getPathname());
-            //     }
-            // } catch (Exception $e) {
-            //     // Log the error or handle it as needed
-            //     print("Error deleting chunked file: " . $e->getMessage());
-            // }
+            try {
+                if (file_exists($file->getPathname())) {
+                    unlink($file->getPathname());
+                }
+            } catch (Exception $e) {
+                // Log the error or handle it as needed
+                print("Error deleting chunked file: " . $e->getMessage());
+            }
 
             return [
                 'path' => $data["source_url"], //asset('storage/' . $path), 

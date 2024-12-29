@@ -23,6 +23,7 @@ class PropertyModel extends Model
      */
     protected $fillable = [        
         'user_id',
+        'parent_id',
         'property_number',
         'title',
         'description',

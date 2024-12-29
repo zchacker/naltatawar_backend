@@ -22,24 +22,7 @@ let cover_img_placeholder   = $('#cover_img_placeholder');
 let img_placeholder         = $('#img_placeholder');
 let vid_placeholder         = $('#vid_placeholder');
 
-let csrf = '{{ csrf_token() }}';
-let target_url = `{{ route('client.property.file.upload') }}`;
-let error_upload_img = "{{ __('error_uploading_img') }}";
-let error_upload_vid = "{{ __('error_uploading_video') }}";
-let most_upload_img  = "{{ __('upload_images') }}";
-let ok_btn =  "{{ __('ok') }}";
 
-function property_init(csrf ,target_url, error_upload_img,  error_upload_vid, most_upload_img, ok_btn)
-{
-    this.csrf = csrf;
-    this.target_url = target_url;
-    this.error_upload_img = error_upload_img;
-    this.error_upload_vid = error_upload_vid;
-    this.most_upload_img = most_upload_img;
-    this.ok_btn = ok_btn;
-
-    console.log(error_upload_img);
-}
 
 let coverImageUploader = new Resumable({
     target: target_url,

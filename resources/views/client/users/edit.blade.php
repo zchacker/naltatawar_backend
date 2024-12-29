@@ -30,28 +30,38 @@
             <input type="email" name="email" class="input w-full" placeholder="{{__('email')}}" value="{{ $data->email }}" required/>
 
             <div>
-                <label for="phone">{{__('password')}}</label>
+                <label for="phone">{{ __('password') }}</label>
                 <input type="password" dir="rtl" name="password" class="input w-full" placeholder="{{__('password')}}"  />
-                <span class="text-red-700 text-xs">{{__('leave_empty_not_change_password')}}</span>
+                <span class="text-red-700 text-xs">{{ __('leave_empty_not_change_password') }}</span>
             </div>
 
             <div class="mt-8 flex flex-col gap-4">
-                <h3 class="font-bold">{{__('permissions')}}</h3>
+                <h3 class="font-bold">{{ __('permissions') }}</h3>
 
-                <div class="flex gap-4">
+                <div class="flex flex-wrap gap-4">
                     <label for="add_real_estate">
-                        <input type="checkbox" name="add_real_estate" id="add_real_estate" {{ $data->add_real_estate ? 'checked' : '' }}/>
-                        {{__('add_real_estate')}} 
+                        <input type="checkbox" name="add_real_estate" id="add_real_estate" {{ $data->permissions["add_real_estate"] ? 'checked' : '' }}/>
+                        {{ __('add_real_estate') }} 
                     </label>
 
                     <label for="edit_real_estate">
-                        <input type="checkbox" name="edit_real_estate" id="edit_real_estate" {{ $data->edit_real_estate ? 'checked' : '' }}/>
-                        {{__('edit_real_estate')}}
+                        <input type="checkbox" name="edit_real_estate" id="edit_real_estate" {{ $data->permissions["edit_real_estate"] ? 'checked' : '' }}/>
+                        {{ __('edit_real_estate') }}
+                    </label>
+
+                    <label for="delete_real_estate">
+                        <input type="checkbox" name="delete_real_estate" id="delete_real_estate" {{ $data->permissions["delete_real_estate"] ? 'checked' : '' }}/>
+                        {{ __('delete_real_estate') }}
                     </label>
 
                     <label for="billing">
-                        <input type="checkbox" name="billing" id="billing" {{ $data->billing ? 'checked' : '' }}/>
-                        {{__('billing')}}
+                        <input type="checkbox" name="billing" id="billing" {{ $data->permissions["billing"] ? 'checked' : '' }}/>
+                        {{ __('billing') }}
+                    </label>                    
+
+                    <label for="can_show_contact">
+                        <input type="checkbox" name="can_show_contact" id="can_show_contact" {{ $data->permissions["can_show_contact"] ? 'checked' : '' }}/>
+                        {{ __('can_show_contact') }}
                     </label>
                 </div>
             </div>

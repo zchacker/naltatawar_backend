@@ -30,7 +30,7 @@ Route::get('/verify_otp', [\App\Http\Controllers\Auth\ForgotPasswordController::
 Route::get('/update_password', [\App\Http\Controllers\Auth\ForgotPasswordController::class, 'update_password'])->name('auth.update_password');
 
 
-Route::group(['middleware' => ['auth:agent']], function () {
+Route::group(['middleware' => ['auth:client']], function () {
     
     // after login or registration
     Route::get('/subscriptions', [\App\Http\Controllers\Subscriptions\PlansController::class, 'index'])->name('subscriptions.packages');
@@ -79,4 +79,12 @@ Route::group(['middleware' => ['auth:agent']], function () {
     Route::post('/settings/update/password', [\App\Http\Controllers\Shared\SettingsController::class, 'update_password_action'])->name('client.settings.update.password');
 
     Route::get('/logout', [\App\Http\Controllers\Auth\LogoutController::class, 'agent_logout'])->name('client.logout');
+});
+
+
+Route::group(['middleware' => ['auth:agent'] , 'prefix' => 'agent'], function () { 
+
+    // home dashboard
+    Route::get('/home', [\App\Http\Controllers\Agent\HomeController::class, 'home'])->name('agent.home');
+    
 });

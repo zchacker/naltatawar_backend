@@ -20,31 +20,41 @@
         <form action="{{ route('client.users.create.action') }}" id="myform" method="post" class="w-full flex flex-col gap-4">
             @csrf    
 
-            <input type="text" name="name" class="input w-full" placeholder="{{__('name')}}" required />
+            <input type="text" name="name" class="input w-full" placeholder="{{__('name')}}" value="{{ old('name') }}" required />
 
-            <input type="tel" name="phone" dir="rtl" class="input w-full" placeholder="{{__('phone')}}" required/>
+            <input type="tel" name="phone" dir="rtl" class="input w-full" placeholder="{{__('phone')}}" value="{{ old('phone') }}" required/>
 
-            <input type="email" name="email" class="input w-full" placeholder="{{__('email')}}" required/>
+            <input type="email" name="email" class="input w-full" placeholder="{{__('email')}}"  value="{{ old('email') }}" required />
 
             <input type="password" dir="rtl" name="password" class="input w-full" placeholder="{{__('password')}}" required/>
 
             <div class="mt-8 flex flex-col gap-4">
                 <h3 class="font-bold">{{__('permissions')}}</h3>
 
-                <div class="flex gap-4">
+                <div class="flex gap-4 flex-wrap">
                     <label for="add_real_estate">
-                        <input type="checkbox" name="add_real_estate" id="add_real_estate" />
+                        <input type="checkbox" name="add_real_estate" id="add_real_estate" {{ old('add_real_estate') ? 'checked' : '' }} />
                         {{__('add_real_estate')}} 
                     </label>
 
                     <label for="edit_real_estate">
-                        <input type="checkbox" name="edit_real_estate" id="edit_real_estate" />
+                        <input type="checkbox" name="edit_real_estate" id="edit_real_estate" {{ old('edit_real_estate') ? 'checked' : '' }} />
                         {{__('edit_real_estate')}}
                     </label>
 
+                    <label for="delete_real_estate">
+                        <input type="checkbox" name="delete_real_estate" id="delete_real_estate" {{ old('delete_real_estate') ? 'checked' : '' }} />
+                        {{__('delete_real_estate')}}
+                    </label>
+
                     <label for="billing">
-                        <input type="checkbox" name="billing" id="billing" />
+                        <input type="checkbox" name="billing" id="billing" {{ old('billing') ? 'checked' : '' }} />
                         {{__('billing')}}
+                    </label>
+
+                    <label for="can_show_contact">
+                        <input type="checkbox" name="can_show_contact" id="can_show_contact" {{ old('can_show_contact') ? 'checked' : '' }} />
+                        {{__('can_show_contact')}}
                     </label>
                 </div>
             </div>

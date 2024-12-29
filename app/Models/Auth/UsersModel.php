@@ -32,6 +32,7 @@ class UsersModel extends Authenticatable
         'parent',
         'email_verified_at',
         'code',
+        'permissions',
         'items_added',
         'add_real_estate',
         'edit_real_estate',
@@ -55,7 +56,8 @@ class UsersModel extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+        'password'          => 'hashed',
+        'permissions'       => 'array',
     ];
 
     public function subscription()

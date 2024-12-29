@@ -64,10 +64,10 @@ class LoginController extends Controller
                             $user_type = 'admin';
                             break;
                         case 2:
-                            $user_type = 'agent';
+                            $user_type = 'client';
                             break;
                         case 3:
-                            $user_type = 'user';
+                            $user_type = 'agent';
                             break;
                         case 4:
                             $user_type = 'support';
@@ -85,15 +85,15 @@ class LoginController extends Controller
                             case "admin":                                
                                 return redirect()->intended(route('subscriptions.packages'));                                
                                 break;
-                            case "agent":                                
+                            case "client":                                                       
                                 return redirect()->intended(route('client.home'));                                
                                 break;
-                            case "user":
-                                return redirect()->intended(route('subscriptions.packages'));                                
+                            case "agent":
+                                dd(auth());
+                                return redirect()->intended(route('agent.home'));                                
                                 break;
                             case "support":
-                                return redirect()->intended(route('subscriptions.packages'));
-                                // return redirect()->route('engineer.orders.list');
+                                return redirect()->intended(route('client.home'));                                
                                 break;                           
                             default:
                                 return redirect()->intended(route('subscriptions.packages'));                                

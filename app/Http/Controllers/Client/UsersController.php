@@ -103,9 +103,21 @@ class UsersController extends Controller
 
         // Create a new user
         $password = Hash::make($request->password);
-        $add_real_estate = $request->has('add_real_estate') ? true : false;
-        $edit_real_estate = $request->has('edit_real_estate') ? true : false;
-        $billing = $request->has('billing') ? true : false;
+
+        $add_real_estate      = $request->has('add_real_estate') ? true : false;
+        $edit_real_estate     = $request->has('edit_real_estate') ? true : false;
+        $delete_real_estate   = $request->has('delete_real_estate') ? true : false;
+        $billing              = $request->has('billing') ? true : false;
+        $can_show_contact     = $request->has('can_show_contact') ? true : false;
+
+        // Create JSON data
+        $jsonData = [
+            'add_real_estate' => $add_real_estate,
+            'edit_real_estate' => $edit_real_estate,
+            'delete_real_estate' => $delete_real_estate,
+            'billing' => $billing,
+            'can_show_contact' => $can_show_contact,
+        ];
 
         $user = UsersModel::create([
             'name' => $request->name,
@@ -115,9 +127,7 @@ class UsersController extends Controller
             'account_type' => 3,
             'parent' => $request->user()->id,
             'email_verified_at' => Carbon::now(),
-            'add_real_estate' => $add_real_estate,
-            'edit_real_estate' => $edit_real_estate,
-            'billing' => $billing,
+            'permissions' => $jsonData
         ]);
 
         if ($user) {
@@ -165,9 +175,21 @@ class UsersController extends Controller
 
 
             $password   = Hash::make($request->password);
-            $add_real_estate = $request->has('add_real_estate') ? true : false;
-            $edit_real_estate = $request->has('edit_real_estate') ? true : false;
-            $billing = $request->has('billing') ? true : false;
+
+            $add_real_estate      = $request->has('add_real_estate') ? true : false;
+            $edit_real_estate     = $request->has('edit_real_estate') ? true : false;
+            $delete_real_estate   = $request->has('delete_real_estate') ? true : false;
+            $billing              = $request->has('billing') ? true : false;
+            $can_show_contact     = $request->has('can_show_contact') ? true : false;
+
+            // Create JSON data
+            $jsonData = [
+                'add_real_estate' => $add_real_estate,
+                'edit_real_estate' => $edit_real_estate,
+                'delete_real_estate' => $delete_real_estate,
+                'billing' => $billing,
+                'can_show_contact' => $can_show_contact,
+            ];
 
             $data = [
                 'name' => $request->name,
@@ -177,9 +199,7 @@ class UsersController extends Controller
                 'account_type' => 3,
                 'parent' => $request->user()->id,
                 'email_verified_at' => Carbon::now(),
-                'add_real_estate' => $add_real_estate,
-                'edit_real_estate' => $edit_real_estate,
-                'billing' => $billing,
+                'permissions' => $jsonData
             ];
 
             if ($request->filled('password')) {
@@ -190,9 +210,7 @@ class UsersController extends Controller
                     'account_type' => 3,
                     'parent' => $request->user()->id,
                     'email_verified_at' => Carbon::now(),
-                    'add_real_estate' => $add_real_estate,
-                    'edit_real_estate' => $edit_real_estate,
-                    'billing' => $billing,
+                    'permissions' => $jsonData
                 ];
             }
 

@@ -10,9 +10,9 @@ class LogoutController extends Controller
 {
     public function agent_logout(Request $request)
     {
-        if (Auth::guard('agent')->check()) // this means that the admins was logged in.
+        if (Auth::guard('client')->check()) // this means that the admins was logged in.
         {
-            Auth::guard('agent')->logout();
+            Auth::guard('client')->logout();
             $request->session()->flush();
             return redirect()->route('login');
         }

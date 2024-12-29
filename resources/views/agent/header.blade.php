@@ -15,7 +15,7 @@
     <!-- alerts  -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
+
 
     @vite(['resources/css/app.css' , 'resources/js/app.js'])    
     <title>{{ __('controle_panel') }}</title>
@@ -43,33 +43,32 @@
             </div>
         </a>
 
+        @if( auth()->user()->permissions["add_real_estate"] || auth()->user()->permissions["edit_real_estate"] || auth()->user()->permissions["delete_real_estate"] )
         <a href="{{ route('client.property.list') }}">
             <div class="flex items-center gap-4 border-t-[1px] border-white text-white p-2 py-3 bg-secondary hover:bg-primary">
                 <img src="{{ asset('imgs/houses.png') }}" alt="" class="h-[30px]">
                 <h3>الوحدات العقارية</h3>
             </div>
         </a>
+        @endif
 
+        @if( auth()->user()->permissions["can_show_contact"] )
         <a href="{{ route('client.contacts.home') }}">
             <div class="flex items-center gap-4 border-t-[1px] border-white text-white p-2 py-3 bg-secondary hover:bg-primary">
                 <img src="{{ asset('imgs/envelope.png') }}" alt="" class="h-[30px]">
                 <h3> طلبات التواصل </h3>
             </div>
         </a>
+        @endif
 
-        <a href="{{ route('client.users.home') }}">
-            <div class="flex items-center gap-4 border-t-[1px] border-white text-white p-2 py-3 bg-secondary hover:bg-primary">
-                <img src="{{ asset('imgs/users.png') }}" alt="" class="h-[30px]">
-                <h3> المستخدمون </h3>
-            </div>
-        </a>
-
+        @if( auth()->user()->permissions["billing"] )
         <a href="{{ route('client.payments') }}">
             <div class="flex items-center gap-4 border-t-[1px] border-white text-white p-2 py-3 bg-secondary hover:bg-primary">
                 <img src="{{ asset('imgs/invoice.png') }}" alt="" class="h-[30px]">
                 <h3> الفوترة والاشتراك </h3>
             </div>
         </a>
+        @endif
 
         <a href="{{ route('client.support.list') }}">
             <div class="flex items-center gap-4 border-t-[1px] border-white text-white p-2 py-3 bg-secondary hover:bg-primary">
