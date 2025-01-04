@@ -316,7 +316,8 @@ class PropertyController extends Controller
                 
                 $this->update_wp_property_post( $proprety_data, $cover_img_id, $imageIds, $videoIds );// add more data to wordpress post later
             
-            })->delay(now()->addMinutes(3));
+            })->delay(now()->addMinutes(3))
+            ->onQueue('save_proprety');
 
             
             return back()->with(['success' => __('added_successfuly')]);
