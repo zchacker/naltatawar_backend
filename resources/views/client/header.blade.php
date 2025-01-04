@@ -29,7 +29,7 @@
 <body>
 <div class="container flex">
 
-<div class="fixed w-[280px] bg-light-secondary h-[100vh] py-8 ">
+<div class="fixed w-[280px] bg-light-secondary h-[100vh] py-8 print:hidden print:w-0">
     <a href="http://naltatawar.com" >
         <img src="{{ asset('imgs/n-logo.png') }}" alt="" class="w-[100px]" />
     </a>

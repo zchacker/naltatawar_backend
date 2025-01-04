@@ -194,8 +194,7 @@ class UsersController extends Controller
             $data = [
                 'name' => $request->name,
                 'email' => $request->email,
-                'phone' => $request->phone,
-                'password' => $password,
+                'phone' => $request->phone,                
                 'account_type' => 3,
                 'parent' => $request->user()->id,
                 'email_verified_at' => Carbon::now(),
@@ -207,6 +206,7 @@ class UsersController extends Controller
                     'name' => $request->name,
                     'email' => $request->email,
                     'phone' => $request->phone,
+                    'password' => $password,
                     'account_type' => 3,
                     'parent' => $request->user()->id,
                     'email_verified_at' => Carbon::now(),

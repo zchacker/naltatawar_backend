@@ -111,10 +111,9 @@ coverImageUploader.on('fileSuccess', function(file, response) {
 
     let fileData = {
         file: file,
-        path: response.path,
+        //path: response.path,
         filename: file.file.name,
-        file_id: response.file_id,
-        wp_id: response.wp_id
+        file_id: response.file_id
     };
     coverImg = fileData;
 
@@ -130,10 +129,9 @@ imageUploader.on('fileSuccess', function(file, response) {
     response = JSON.parse(response);
     let fileData = {
         file: file,
-        path: response.path,
+        //path: response.path,
         filename: file.file.name,
-        file_id: response.file_id,
-        wp_id: response.wp_id
+        file_id: response.file_id
     };
     uploadedFiles.images.push(fileData);
     img_placeholder.hide();
@@ -145,10 +143,10 @@ videoUploader.on('fileSuccess', function(file, response) {
     // video uploaded successfuly
     response = JSON.parse(response);
     let fileData = {
-        path: response.path,
+        file: file,
+        //path: response.path,
         filename: response.filename,
-        file_id: response.file_id,
-        wp_id: response.wp_id
+        file_id: response.file_id
     };
     uploadedFiles.videos.push(fileData);
     vid_placeholder.hide();
@@ -368,7 +366,7 @@ $('#myform').on('submit', function(event) {
     $('<input>')
             .attr('type', 'hidden')
             .attr('name', '_token') // e.g., videos[0][file_id]
-            .val(`{{ csrf_token() }}`)
+            .val(csrf)
             .appendTo(form);
 
     

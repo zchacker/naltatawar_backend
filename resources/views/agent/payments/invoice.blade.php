@@ -1,4 +1,4 @@
-@include('client.header')
+@include('agent.header')
 
 
 <div id="contentToPrint" class="max-w-3xl print:w-full print:mt-0 mx-auto mt-10 bg-white shadow-md rounded-lg border border-gray-200 p-6">
@@ -68,4 +68,4 @@
         window.print();
     });
 </script>
-@include('client.footer')
+@include('agent.footer')

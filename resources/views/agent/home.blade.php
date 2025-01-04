@@ -23,15 +23,13 @@
 </div>
 
 <div class="flex gap-6 mt-8">
+
+    @if( auth()->user()->permissions["add_real_estate"] )
     <a href="{{ route('client.property.create') }}" class="bg-cta px-8 py-2 items-center rounded-full flex gap-2">
         <img src="{{ asset('imgs/add.png') }}" alt="" class="w-[20px]" />
         <span class="font-medium text-white">إضافة عقار</span>
-    </a>
-
-    <a href="{{ route('client.users.create.form') }}" class="bg-cta px-8 py-2 items-center rounded-full flex gap-2">
-        <img src="{{ asset('imgs/user.png') }}" alt="" class="w-[20px]" />
-        <span class="font-medium text-white">إضافة مستخدم</span>
-    </a>
+    </a> 
+    @endif   
 
     <a href="{{ route('client.support.create') }}" class="bg-cta px-8 py-2 items-center rounded-full flex gap-2">
         <img src="{{ asset('imgs/support.png') }}" alt="" class="w-[20px]" />

@@ -5,29 +5,34 @@ namespace App\Http\Controllers\Agent;
 use App\Http\Controllers\Controller;
 use App\Models\Property\PropertyModel;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class HomeController extends Controller
 {
     public function home(Request $request)
     {
-        // if ($request->user()->subscription === null) {
-        //     return redirect()->route('subscriptions.packages');
-        // }
+        if ($request->user()->parent()->subscription === null) {
+            return redirect()->route('subscriptions.packages');
+        }
 
-        $properties  = PropertyModel::where('user_id', $request->user()->id)->limit(10)->get();
+        //abort(Response::HTTP_UNAUTHORIZED);        
 
-        $total  = PropertyModel::where('user_id', $request->user()->id)        
+        $user_id = $request->user()->parent()->id;
+
+        $properties  = PropertyModel::where('user_id', $request->user()->parent()->id)->limit(10)->get();
+
+        $total  = PropertyModel::where('user_id', $user_id)        
         ->count();
 
-        $sell_count = PropertyModel::where('user_id', $request->user()->id)
+        $sell_count = PropertyModel::where('user_id', $user_id)
         ->whereIn('purpose', [25, 38])
         ->count();
 
-        $invest_count = PropertyModel::where('user_id', $request->user()->id)
+        $invest_count = PropertyModel::where('user_id', $user_id)
         ->whereIn('purpose', [27, 36])
         ->count();
 
-        $rent_count = PropertyModel::where('user_id', $request->user()->id)
+        $rent_count = PropertyModel::where('user_id', $user_id)
         ->whereIn('purpose', [26, 34])
         ->count();
 

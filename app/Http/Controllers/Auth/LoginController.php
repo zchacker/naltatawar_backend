@@ -88,8 +88,7 @@ class LoginController extends Controller
                             case "client":                                                       
                                 return redirect()->intended(route('client.home'));                                
                                 break;
-                            case "agent":
-                                dd(auth());
+                            case "agent":                                                                
                                 return redirect()->intended(route('agent.home'));                                
                                 break;
                             case "support":

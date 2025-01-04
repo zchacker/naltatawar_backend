@@ -20,14 +20,14 @@ class SettingsController extends Controller
 
     public function client_agent_data(Request $request)
     {
-        $user = UsersModel::with('avatar')->find($request->user()->id);
-        return view('clients.settings.data', compact('user'));
+        $user = UsersModel::with('subscription')->find($request->user()->id);
+        return view('agent.settings.profile', compact('user'));
     }  
     
     public function admin_data(Request $request)
     {
         $user = UsersModel::with('avatar')->find($request->user()->id);
-        return view('admin.settings.data', compact('user'));
+        return view('admin.settings.profile', compact('user'));
     }  
     
     public function supervisor_data(Request $request)

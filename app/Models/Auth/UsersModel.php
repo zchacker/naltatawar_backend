@@ -33,10 +33,7 @@ class UsersModel extends Authenticatable
         'email_verified_at',
         'code',
         'permissions',
-        'items_added',
-        'add_real_estate',
-        'edit_real_estate',
-        'billing'
+        'items_added'        
     ];
 
     /**
@@ -67,6 +64,6 @@ class UsersModel extends Authenticatable
 
     public function parent()
     {
-        return $this->hasOne(UsersModel::class, 'parent' , 'id');
+        return $this->hasOne(UsersModel::class, 'id' , 'parent')->first();
     }
 }

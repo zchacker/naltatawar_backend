@@ -27,16 +27,16 @@
 </head>
 
 <body>
-<div class="container flex">
+<div class="container flex ">
 
-<div class="fixed w-[280px] bg-light-secondary h-[100vh] py-8 ">
+<div class="fixed w-[280px] bg-light-secondary h-[100vh] py-8 block print:hidden print:w-0">
     <a href="http://naltatawar.com" >
         <img src="{{ asset('imgs/n-logo.png') }}" alt="" class="w-[100px]" />
     </a>
 
     <div class="items-list mt-4">
 
-        <a href="{{ route('client.home') }}">
+        <a href="{{ route('agent.home') }}">
             <div class="flex items-center gap-4 border-t-[1px] border-white text-white p-2 py-3 bg-secondary active_nav_item1 hover:bg-primary">
                 <img src="{{ asset('imgs/home.png') }}" alt="" class="h-[30px]">
                 <h3>الرئيسية</h3>
@@ -53,7 +53,7 @@
         @endif
 
         @if( auth()->user()->permissions["can_show_contact"] )
-        <a href="{{ route('client.contacts.home') }}">
+        <a href="{{ route('agent.contacts.home') }}">
             <div class="flex items-center gap-4 border-t-[1px] border-white text-white p-2 py-3 bg-secondary hover:bg-primary">
                 <img src="{{ asset('imgs/envelope.png') }}" alt="" class="h-[30px]">
                 <h3> طلبات التواصل </h3>
@@ -62,7 +62,7 @@
         @endif
 
         @if( auth()->user()->permissions["billing"] )
-        <a href="{{ route('client.payments') }}">
+        <a href="{{ route('agent.payments') }}">
             <div class="flex items-center gap-4 border-t-[1px] border-white text-white p-2 py-3 bg-secondary hover:bg-primary">
                 <img src="{{ asset('imgs/invoice.png') }}" alt="" class="h-[30px]">
                 <h3> الفوترة والاشتراك </h3>
@@ -70,14 +70,14 @@
         </a>
         @endif
 
-        <a href="{{ route('client.support.list') }}">
+        <a href="{{ route('agent.support.list') }}">
             <div class="flex items-center gap-4 border-t-[1px] border-white text-white p-2 py-3 bg-secondary hover:bg-primary">
                 <img src="{{ asset('imgs/support.png') }}" alt="" class="h-[30px]">
                 <h3> الدعم الفني </h3>
             </div>
         </a>
 
-        <a href="{{ route('client.settings') }}">
+        <a href="{{ route('agent.settings') }}">
             <div class="flex items-center gap-4 border-t-[1px] border-white text-white p-2 py-3 bg-secondary hover:bg-primary">
                 <img src="{{ asset('imgs/settings.png') }}" alt="" class="h-[30px]">
                 <h3> الاعدادات </h3>

@@ -48,7 +48,8 @@ class PropertyModel extends Model
         'mosque',
         'pool',
         'garden',
-        'status'
+        'status',
+        'facilities'
     ];
 
     /**
@@ -70,6 +71,7 @@ class PropertyModel extends Model
         return [
             // 'email_verified_at' => 'datetime',
             // 'password' => 'hashed',
+            'facilities' => 'array'
         ];
     }
 

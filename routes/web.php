@@ -87,4 +87,27 @@ Route::group(['middleware' => ['auth:agent'] , 'prefix' => 'agent'], function ()
     // home dashboard
     Route::get('/home', [\App\Http\Controllers\Agent\HomeController::class, 'home'])->name('agent.home');
     
+    // contact requests    
+    Route::get('/contacts/home', [\App\Http\Controllers\Agent\ContactRequestController::class, 'home'])->name('agent.contacts.home');
+    Route::get('/contacts/details/{id}', [\App\Http\Controllers\Agent\ContactRequestController::class, 'details'])->name('agent.contacts.details');
+    
+    // payments
+    Route::get('/payments/list', [\App\Http\Controllers\Agent\Billing\PaymentsController::class, 'payments'])->name('agent.payments');
+    Route::get('/payments/invoice/{id}', [\App\Http\Controllers\Agent\Billing\PaymentsController::class, 'invoice'])->name('agent.invoice');
+    
+
+    // support
+    Route::get('/support/list', [\App\Http\Controllers\Agent\SupportController::class, 'list'])->name('agent.support.list');
+    Route::get('/support/create', [\App\Http\Controllers\Agent\SupportController::class, 'create'])->name('agent.support.create');
+    Route::post('/support/create/action', [\App\Http\Controllers\Agent\SupportController::class, 'create_action'])->name('agent.support.create.action');
+    Route::get('/support/update/{id}', [\App\Http\Controllers\Agent\SupportController::class, 'update'])->name('agent.support.update');
+    Route::post('/support/update/action/{id}', [\App\Http\Controllers\Agent\SupportController::class, 'update_action'])->name('agent.support.update.action');
+
+
+    // settings
+    Route::get('/settings', [\App\Http\Controllers\Shared\SettingsController::class, 'client_agent_data'])->name('agent.settings');
+    Route::post('/settings/update/profile', [\App\Http\Controllers\Shared\SettingsController::class, 'update_data_action'])->name('agent.settings.update.profile');
+    Route::post('/settings/update/password', [\App\Http\Controllers\Shared\SettingsController::class, 'update_password_action'])->name('agent.settings.update.password');
+
+
 });
