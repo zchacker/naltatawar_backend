@@ -26,7 +26,7 @@ class SettingsController extends Controller
     
     public function admin_data(Request $request)
     {
-        $user = UsersModel::with('avatar')->find($request->user()->id);
+        $user = UsersModel::find($request->user()->id);
         return view('admin.settings.profile', compact('user'));
     }  
     

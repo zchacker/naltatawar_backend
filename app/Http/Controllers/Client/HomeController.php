@@ -11,9 +11,8 @@ class HomeController extends Controller
 
     public function home(Request $request)
     {
-        phpinfo();
-        return;
-        
+        // this for first time only
+        // need to update        
         if ($request->user()->subscription === null) {
             return redirect()->route('subscriptions.packages');
         }

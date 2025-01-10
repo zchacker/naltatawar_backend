@@ -2,6 +2,7 @@
 
 namespace App\Models\Support;
 
+use App\Models\Auth\UsersModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -54,5 +55,9 @@ class SupportModel extends Model
         return $this->hasMany(SupportReplayModel::class, "ticket_id", "id")->orderBy('created_at', 'desc');;
     }
     
+    public function customer_data()
+    {
+        return $this->hasOne(UsersModel::class , 'id' , 'customer_id');
+    }
     
 }

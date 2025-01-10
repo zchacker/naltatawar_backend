@@ -30,6 +30,46 @@ Route::get('/verify_otp', [\App\Http\Controllers\Auth\ForgotPasswordController::
 Route::get('/update_password', [\App\Http\Controllers\Auth\ForgotPasswordController::class, 'update_password'])->name('auth.update_password');
 
 
+Route::group(['middleware' => ['auth:admin'] , 'prefix' => 'admin'], function () { 
+
+    // home dashboard
+    Route::get('/home', [\App\Http\Controllers\Admin\HomeController::class, 'home'])->name('admin.home');
+    
+    // real estate
+    Route::get('/properties', [\App\Http\Controllers\Admin\PropertyController::class, 'list'])->name('admin.property.list');
+    Route::get('/properties/my', [\App\Http\Controllers\Admin\PropertyController::class, 'my_list'])->name('admin.property.list.my');
+    Route::post('/properties/publish', [\App\Http\Controllers\Admin\PropertyController::class, 'publish_properity'])->name('admin.property.publish');
+
+    //users
+    Route::get('/users/home', [\App\Http\Controllers\Admin\UsersController::class, 'home'])->name('admin.users.home');
+    Route::get('/users/create', [\App\Http\Controllers\Admin\UsersController::class, 'create_form'])->name('admin.users.create.form');
+    Route::post('/users/create/action', [\App\Http\Controllers\Admin\UsersController::class, 'create_action'])->name('admin.users.create.action');
+    
+    Route::get('/users/edit/{id}', [\App\Http\Controllers\Admin\UsersController::class, 'edit_form'])->name('admin.users.edit.form');
+    Route::post('/users/edit/{id}/action', [\App\Http\Controllers\Admin\UsersController::class, 'edit_action'])->name('admin.users.edit.action');
+    
+    Route::delete('/users/delete/{user}', [\App\Http\Controllers\Admin\UsersController::class, 'delete'])->name('admin.users.delete.action');
+     
+
+    // support
+    Route::get('/support/list', [\App\Http\Controllers\Admin\SupportController::class, 'list'])->name('admin.support.list');
+    Route::get('/support/create', [\App\Http\Controllers\Admin\SupportController::class, 'create'])->name('admin.support.create');
+    Route::post('/support/create/action', [\App\Http\Controllers\Admin\SupportController::class, 'create_action'])->name('admin.support.create.action');
+    Route::get('/support/update/{id}', [\App\Http\Controllers\Admin\SupportController::class, 'update'])->name('admin.support.update');
+    Route::post('/support/update/action/{id}', [\App\Http\Controllers\Admin\SupportController::class, 'update_action'])->name('admin.support.update.action');
+    
+
+    // settings
+    Route::get('/settings', [\App\Http\Controllers\Shared\SettingsController::class, 'admin_data'])->name('admin.settings');
+    Route::post('/settings/update/profile', [\App\Http\Controllers\Shared\SettingsController::class, 'update_data_action'])->name('admin.settings.update.profile');
+    Route::post('/settings/update/password', [\App\Http\Controllers\Shared\SettingsController::class, 'update_password_action'])->name('admin.settings.update.password');
+
+
+    // logout
+    Route::get('/logout', [\App\Http\Controllers\Auth\LogoutController::class, 'admin_logout'])->name('admin.logout');
+
+});
+
 Route::group(['middleware' => ['auth:client']], function () {
     
     // after login or registration
@@ -46,8 +86,7 @@ Route::group(['middleware' => ['auth:client']], function () {
     Route::get('/properties/create', [\App\Http\Controllers\Client\PropertyController::class, 'create'])->name('client.property.create');
     Route::post('/properties/create/action', [\App\Http\Controllers\Client\PropertyController::class, 'create_action'])->name('client.property.create.action');
     
-    Route::post('/file/upload', [\App\Http\Controllers\Client\PropertyController::class, 'uploadLargeFiles'])->name('client.property.file.upload');
-    
+    Route::post('/file/upload', [\App\Http\Controllers\Client\PropertyController::class, 'uploadLargeFiles'])->name('client.property.file.upload');    
 
     // contact requests    
     Route::get('/contacts/home', [\App\Http\Controllers\Client\ContactRequestController::class, 'home'])->name('client.contacts.home');
@@ -74,11 +113,14 @@ Route::group(['middleware' => ['auth:client']], function () {
     Route::get('/support/update/{id}', [\App\Http\Controllers\Client\SupportController::class, 'update'])->name('client.support.update');
     Route::post('/support/update/action/{id}', [\App\Http\Controllers\Client\SupportController::class, 'update_action'])->name('client.support.update.action');
     
+    // settings
     Route::get('/settings', [\App\Http\Controllers\Shared\SettingsController::class, 'client_data'])->name('client.settings');
     Route::post('/settings/update/profile', [\App\Http\Controllers\Shared\SettingsController::class, 'update_data_action'])->name('client.settings.update.profile');
     Route::post('/settings/update/password', [\App\Http\Controllers\Shared\SettingsController::class, 'update_password_action'])->name('client.settings.update.password');
 
-    Route::get('/logout', [\App\Http\Controllers\Auth\LogoutController::class, 'agent_logout'])->name('client.logout');
+    // logout
+    Route::get('/logout', [\App\Http\Controllers\Auth\LogoutController::class, 'client_logout'])->name('client.logout');
+
 });
 
 
@@ -109,5 +151,8 @@ Route::group(['middleware' => ['auth:agent'] , 'prefix' => 'agent'], function ()
     Route::post('/settings/update/profile', [\App\Http\Controllers\Shared\SettingsController::class, 'update_data_action'])->name('agent.settings.update.profile');
     Route::post('/settings/update/password', [\App\Http\Controllers\Shared\SettingsController::class, 'update_password_action'])->name('agent.settings.update.password');
 
+
+    // logout
+    Route::get('/logout', [\App\Http\Controllers\Auth\LogoutController::class, 'agent_logout'])->name('agent.logout');
 
 });

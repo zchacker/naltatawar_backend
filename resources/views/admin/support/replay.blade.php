@@ -1,9 +1,27 @@
-@include('client.header')
+@include('admin.header')
 
 <div class="mt-4 flex flex-col gap-8">
     <h2 class="font-bold text-xl"> {{__('support')}} </h2>
 
     <div class="md:w-3/4">        
+
+        <fieldset class="border-2 border-gray-400 rounded-md p-4 mb-8">
+            <legend class="font-bold text-xl">معلومات العميل:</legend>
+            <div class="flex flex-col gap-2">
+                <div class="flex gap-2 items-center">
+                    <h2 class="font-bold">الاسم: </h2>
+                    <span>{{ $support->customer_data->name }}</span>
+                </div>
+                <div class="flex gap-2 items-center">
+                    <h2 class="font-bold">الايميل: </h2>
+                    <span>{{ $support->customer_data->email }}</span>
+                </div>
+                <div class="flex gap-2 items-center">
+                    <h2 class="font-bold">رقم الهاتف: </h2>
+                    <span>{{ $support->customer_data->phone }}</span>
+                </div>
+            </div>
+        </fieldset>
 
         <div class="flex flex-col gap-4">
             <div class="flex gap-4">
@@ -29,7 +47,7 @@
         @endif
 
         <div class="border-t border-b border-gray-400 mt-8 pt-4 mb-4 pb-4">
-            <form action="{{ route('client.support.update.action' , $support->id) }}" method="post" class="w-full flex flex-col gap-4">
+            <form action="{{ route('admin.support.update.action' , $support->id) }}" method="post" class="w-full flex flex-col gap-4">
                 @csrf 
 
                 <textarea name="message" id="" cols="30" rows="10" class="input" placeholder="{{ __('ticket_replay') }}" required></textarea>
@@ -41,13 +59,13 @@
         <div class="flex flex-col gap-4">
             @foreach($support->replaies as $replay)
                 <div class="flex flex-col gap-2 ">
-                    <p class="font-bold">{{ auth()->user()->id != $replay->user->id ? 'الدعم الفني - ' : '' }} {{ $replay->user->name }} </p>
-                    @if( auth()->user()->id != $replay->user->id)
+                    <p class="font-bold">{{ $replay->user->name }} {{ $replay->user->account_type }}</p>
+                    @if($replay->user->account_type != 1)
                     <div class="bg-blue-200 p-4 rounded-md relative">
-                    @else 
+                    @else
                     <div class="bg-light-secondary p-4 rounded-md relative">
                     @endif
-                        <span class="text-lg">{{ $replay->message }}</span>
+                        <span class="text-lg">{!! nl2br($replay->message) !!}</span>
                         <div class="absolute left-2 bottom-1">
                             <span class="text-xs">{{ $replay->created_at }}</span>
                         </div>
@@ -59,4 +77,4 @@
     </div>
 </div>
 
-@include('client.footer')
+@include('admin.footer')
