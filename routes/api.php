@@ -8,3 +8,4 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
+Route::get('/save/contact', [\App\Http\Controllers\Client\ContactRequestController::class, 'save_contact'])->name('save.contact');

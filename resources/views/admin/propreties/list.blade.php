@@ -50,7 +50,7 @@
                         </td>
                         <td class="px-6 py-4"> {{ __($proprety->status) }} </td>
                         <td class="px-6 py-4 flex gap-1">
-                            <a href="javascript:publish( {{ $proprety->id }} , 'published' )" class="text-blue-400 underline">نشر</a>
+                            <a href="javascript:publish( {{ $proprety->id }} , 'publish' )" class="text-blue-400 underline">نشر</a>
                             <span>/</span>
                             <a href="javascript:publish( {{ $proprety->id }} , 'rejected' )" class="text-red-400 underline">رفض</a>
                         </td>

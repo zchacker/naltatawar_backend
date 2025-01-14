@@ -40,6 +40,11 @@ Route::group(['middleware' => ['auth:admin'] , 'prefix' => 'admin'], function ()
     Route::get('/properties/my', [\App\Http\Controllers\Admin\PropertyController::class, 'my_list'])->name('admin.property.list.my');
     Route::post('/properties/publish', [\App\Http\Controllers\Admin\PropertyController::class, 'publish_properity'])->name('admin.property.publish');
 
+    // contact requests    
+    Route::get('/contacts/home', [\App\Http\Controllers\Admin\ContactRequestController::class, 'home'])->name('admin.contacts.home');
+    Route::get('/contacts/details/{id}', [\App\Http\Controllers\Admin\ContactRequestController::class, 'details'])->name('admin.contacts.details');
+    
+    
     //users
     Route::get('/users/home', [\App\Http\Controllers\Admin\UsersController::class, 'home'])->name('admin.users.home');
     Route::get('/users/create', [\App\Http\Controllers\Admin\UsersController::class, 'create_form'])->name('admin.users.create.form');
@@ -50,6 +55,14 @@ Route::group(['middleware' => ['auth:admin'] , 'prefix' => 'admin'], function ()
     
     Route::delete('/users/delete/{user}', [\App\Http\Controllers\Admin\UsersController::class, 'delete'])->name('admin.users.delete.action');
      
+    // payments
+    Route::get('/payments/list', [\App\Http\Controllers\Admin\Billing\PaymentsController::class, 'payments'])->name('admin.payments');
+    Route::get('/payments/invoice/{id}', [\App\Http\Controllers\Admin\Billing\PaymentsController::class, 'invoice'])->name('admin.invoice');
+    
+    // plans
+    Route::get('/plans/list', [\App\Http\Controllers\Admin\Billing\SubscriptionPlansController::class, 'list'])->name('admin.plans.list');
+    Route::get('/plan/edit/{id}', [\App\Http\Controllers\Admin\Billing\SubscriptionPlansController::class, 'edit'])->name('admin.plan.edit');
+    Route::post('/plan/edit/{id}', [\App\Http\Controllers\Admin\Billing\SubscriptionPlansController::class, 'edit_action'])->name('admin.plan.edit.action');
 
     // support
     Route::get('/support/list', [\App\Http\Controllers\Admin\SupportController::class, 'list'])->name('admin.support.list');

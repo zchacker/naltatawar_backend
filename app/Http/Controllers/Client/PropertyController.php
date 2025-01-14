@@ -430,6 +430,8 @@ class PropertyController extends Controller
     /**
      * This related to this SDK
      * https://github.com/pionl/laravel-chunk-upload
+     * find more info about problem
+     * https://github.com/pionl/laravel-chunk-upload/issues/17
      */
     public function uploadLargeFiles(Request $request) {
         

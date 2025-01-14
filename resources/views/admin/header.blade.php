@@ -32,7 +32,7 @@
 <body>
 <div class="container flex">
 
-<div class="fixed w-[280px] bg-light-secondary h-[100vh] py-8 print:hidden print:w-0">
+<div class="fixed w-[230px] bg-light-secondary h-[100vh] py-8 print:hidden print:w-0 overflow-auto">
     <a href="http://naltatawar.com" >
         <img src="{{ asset('imgs/n-logo.png') }}" alt="" class="w-[100px]" />
     </a>
@@ -60,7 +60,7 @@
             </div>
         </a>
 
-        <a href="{{ route('client.contacts.home') }}">
+        <a href="{{ route('admin.contacts.home') }}">
             <div class="flex items-center gap-4 border-t-[1px] border-white text-white p-2 py-3 bg-secondary hover:bg-primary">
                 <img src="{{ asset('imgs/envelope.png') }}" alt="" class="h-[30px]">
                 <h3> طلبات التواصل </h3>
@@ -74,10 +74,17 @@
             </div>
         </a>
 
-        <a href="{{ route('client.payments') }}">
+        <a href="{{ route('admin.payments') }}">
             <div class="flex items-center gap-4 border-t-[1px] border-white text-white p-2 py-3 bg-secondary hover:bg-primary">
                 <img src="{{ asset('imgs/invoice.png') }}" alt="" class="h-[30px]">
                 <h3> الفوترة والاشتراك </h3>
+            </div>
+        </a>
+
+        <a href="{{ route('admin.plans.list') }}">
+            <div class="flex items-center gap-4 border-t-[1px] border-white text-white p-2 py-3 bg-secondary hover:bg-primary">
+                <img src="{{ asset('imgs/invoice.png') }}" alt="" class="h-[30px]">
+                <h3>  خطط الاشتراكات </h3>
             </div>
         </a>
 
@@ -97,7 +104,7 @@
 
     </div>
 
-    <div class="absolute bottom-0 right-0 left-0">
+    <div class="absolute2 bottom-0 right-0 left-0 mt-8">
         <a href="{{ route('admin.logout') }}">
             <div class="flex items-center gap-4 border-t-[1px] border-white text-white p-2 py-3 bg-[#FF6062]">
                 <img src="{{ asset('imgs/logout.png') }}" alt="" class="h-[30px]">

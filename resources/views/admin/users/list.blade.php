@@ -30,6 +30,7 @@
                 <td class="px-6 py-4"> {{ $contact->created_at }} </td>
                 <td class="px-6 py-4 flex gap-4">
                     <a href="{{ route('admin.users.edit.form' , $contact->id) }}" class="text-blue-500 underline"> {{__('edit')}} </a>
+                    {{-- 
                     <form action="{{ route('admin.users.delete.action' , $contact->id) }}" method="POST" onsubmit="return confirmDelete(event)">
                         @method('DELETE')
                         @csrf
@@ -40,6 +41,7 @@
                             </svg>
                         </button>
                     </form>
+                    --}}
                 </td>
             </tr>
             @endforeach

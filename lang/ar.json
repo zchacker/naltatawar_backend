@@ -44,6 +44,8 @@
     "monthly":"شهري",
     "yearly":"سنوي",
     "paid":"مدفوع",
+    "individuals":"أفراد",
+    "businesses":"شركات",
 
     "action":"إجراء",
     "create_date":"تاريخ الانشاء",
@@ -135,5 +137,16 @@
     "wrong-password":"كلمة السر الحالية خطأ",
 
     "retreat":"تراجع",
-    "comfirm":"تأكيد"
+    "comfirm":"تأكيد",
+
+    "billing_cycle":"دورة الدفع",
+    "plan_type":"نوع الخطة",
+    "items":"الوحدات",
+    "price":"السعر",
+
+    "price_required":"السعر مطلوب",
+    "items_required":"عدد العقارات مطلوب",
+    "user_required":"عدد المستخدمين مطلوب",
+    "billing_cycle_required":"دورة الاشتراك مطلوبة",
+    "plan_type_required":"نوع الخطة مطلوب"
 }
