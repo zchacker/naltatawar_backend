@@ -24,9 +24,12 @@
 
     "added_successfuly":"تمت الاضافة بنجاح",
     "updated_successfuly":"تم التحديث بنجاح",
+    "subscription_updated_successfuly":"تم تحديث الاشتراك بنجاح",
+    "subscription_expired":"اشتراكك انتهى، يرجى تجديد الاشتراك",
     "faild_to_save":"فشل حفظ البيانات",
     "unknown_error":"خطأ غير معروف",
-    
+    "after_or_equal":"التاريخ يجب أن يكون اليوم او المستقبل",
+
     "name_required": "يجب كتابة الاسم",
     "message_required": "يجب كتابة الرسالة",
     "email_required": "يجب كتابة البريد الالكتروني",
@@ -54,6 +57,7 @@
     "edit":"تعديل",
     "delete":"حذف",
     "add_user":"اضافة مستخدم",
+    "edit_user":"تعديل مستخدم",
     "save":"حفظ",
     "permissions":"الصلاحيات",
     "add_real_estate":"إضافة عقارات",
@@ -148,5 +152,10 @@
     "items_required":"عدد العقارات مطلوب",
     "user_required":"عدد المستخدمين مطلوب",
     "billing_cycle_required":"دورة الاشتراك مطلوبة",
-    "plan_type_required":"نوع الخطة مطلوب"
+    "plan_type_required":"نوع الخطة مطلوب",
+
+    "back_to_original_account":"لقد عدت إلى حسابك الأصلي.",
+    "active":"فعال",
+    "cancelled":"ملغي",
+    "expired":"منتهي"
 }

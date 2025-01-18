@@ -19,7 +19,7 @@
 
         <form action="{{ route('admin.plan.edit.action' , $data->id) }}" method="post" class="w-full flex flex-col gap-4">
             @csrf    
-
+    
             <label for="name">{{__('name')}}</label>
             <input type="text" name="name" class="input w-full" placeholder="{{__('name')}}" value="{{ $data->name }}" required />
 
@@ -46,6 +46,7 @@
 
             <button type="submit" class="submit_btn self-start">{{__('save')}}</button>
         </form>
+    
     </div>
 
 </div>

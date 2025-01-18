@@ -32,7 +32,7 @@ class PaymentsController extends Controller
     // https://github.com/SallaApp/ZATCA
     public function invoice(Request $request)
     {
-        $payment_data = PaymentsModel::where(['user_id' =>  $request->user()->id , 'id' => $request->id ])->first();
+        $payment_data = PaymentsModel::where([ 'id' => $request->id ])->with('user')->first();
 
         if( $payment_data == NULL)
         {

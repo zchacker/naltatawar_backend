@@ -21,10 +21,10 @@
 
     <!-- User Information -->
     <div class="mb-6">
-        <h3 class="text-lg font-semibold text-gray-700">مفوترة إلى:</h3>
-        <p class="text-gray-600">{{ auth()->user()->name }}</p>
-        <p class="text-gray-600">{{ auth()->user()->email }}</p>
-        <p class="text-gray-600">{{ auth()->user()->phone }}</p>
+        <h3 class="text-lg font-bold text-gray-700">مفوترة إلى:</h3>
+        <p class="text-gray-600">{{ $payment_data->user->name }}</p>
+        <p class="text-gray-600">{{ $payment_data->user->email }}</p>
+        <p class="text-gray-600">{{ $payment_data->user->phone }}</p>
     </div>
 
     <!-- Subscription Details -->

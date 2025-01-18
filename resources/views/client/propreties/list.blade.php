@@ -3,7 +3,7 @@
 <div class="mt-4 flex flex-col gap-4">
     <h2 class="font-bold text-xl"> {{__('your_properties')}} </h2>  
     
-    @if( ($max_items - $items_used) > 0 )
+    @if( ($max_items - $items_used) > 0 && $valid_subscribe == true)
     <a href="{{ route('client.property.create') }}" class="bg-cta px-8 py-2 items-center rounded-full flex gap-2 self-start">
         <img src="{{ asset('imgs/add.png') }}" alt="" class="w-[20px]" />
         <span class="font-medium text-white"> {{ __('create_proprety') }} </span>
@@ -65,12 +65,27 @@
 
 <script>
     function no_add_item(){
-        Swal.fire({
-            title: 'خطأ',
-            text: `{{ __('max_items_reached') }}`,
-            icon: 'error',
-            confirmButtonText: `{{ __('ok') }}`
-        });
+
+        @if($valid_subscribe)
+        
+            Swal.fire({
+                title: 'خطأ',
+                text: `{{ __('max_items_reached') }}`,
+                icon: 'error',
+                confirmButtonText: `{{ __('ok') }}`
+            });
+
+        @else
+
+            Swal.fire({
+                title: 'خطأ',
+                text: `{{ __('subscription_expired') }}`,
+                icon: 'error',
+                confirmButtonText: `{{ __('ok') }}`
+            });
+
+        @endif
+        
     }
 
     function not_published(){

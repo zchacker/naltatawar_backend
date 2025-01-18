@@ -87,6 +87,16 @@
 
     </div>
 
+    @if(session()->has('impersonate'))
+    <div class="absolute bottom-0 right-0 left-0">
+        <a href="{{ route('admin.users.stop.impersonate') }}">
+            <div class="flex items-center gap-4 border-t-[1px] border-white text-white p-2 py-3 bg-[#FF6062]">
+                <img src="{{ asset('imgs/logout.png') }}" alt="" class="h-[30px]">
+                <h3>تسجيل الخروج باسم</h3>
+            </div>
+        </a>
+    </div>
+    @else 
     <div class="absolute bottom-0 right-0 left-0">
         <a href="{{ route('client.logout') }}">
             <div class="flex items-center gap-4 border-t-[1px] border-white text-white p-2 py-3 bg-[#FF6062]">
@@ -95,6 +105,8 @@
             </div>
         </a>
     </div>
+    @endif
+
 </div>
 
 <!-- start content  -->

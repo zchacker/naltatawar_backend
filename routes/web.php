@@ -54,7 +54,13 @@ Route::group(['middleware' => ['auth:admin'] , 'prefix' => 'admin'], function ()
     Route::post('/users/edit/{id}/action', [\App\Http\Controllers\Admin\UsersController::class, 'edit_action'])->name('admin.users.edit.action');
     
     Route::delete('/users/delete/{user}', [\App\Http\Controllers\Admin\UsersController::class, 'delete'])->name('admin.users.delete.action');
-     
+    
+    // this is login as other users
+    Route::get('/impersonate/{userId}', [\App\Http\Controllers\Admin\UsersController::class, 'impersonate'])->name('admin.users.impersonate');
+    Route::get('/stop-impersonate', [\App\Http\Controllers\Admin\UsersController::class, 'stopImpersonation'])->name('admin.users.stop.impersonate');
+    // update user subscriotion
+    Route::post('/subcription/update/{id}', [\App\Http\Controllers\Admin\UsersController::class, 'update_user_subcription'])->name('admin.users.subcription.update');
+    
     // payments
     Route::get('/payments/list', [\App\Http\Controllers\Admin\Billing\PaymentsController::class, 'payments'])->name('admin.payments');
     Route::get('/payments/invoice/{id}', [\App\Http\Controllers\Admin\Billing\PaymentsController::class, 'invoice'])->name('admin.invoice');
@@ -80,7 +86,7 @@ Route::group(['middleware' => ['auth:admin'] , 'prefix' => 'admin'], function ()
 
     // logout
     Route::get('/logout', [\App\Http\Controllers\Auth\LogoutController::class, 'admin_logout'])->name('admin.logout');
-
+    
 });
 
 Route::group(['middleware' => ['auth:client']], function () {

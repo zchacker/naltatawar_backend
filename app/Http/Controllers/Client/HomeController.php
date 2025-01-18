@@ -12,7 +12,9 @@ class HomeController extends Controller
     public function home(Request $request)
     {
         // this for first time only
-        // need to update        
+        // need to update
+        //dd($request->user());
+
         if ($request->user()->subscription === null) {
             return redirect()->route('subscriptions.packages');
         }

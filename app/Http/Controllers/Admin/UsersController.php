@@ -5,8 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Auth\UsersModel;
+use App\Models\Payments\PaymentsModel;
+use App\Models\Subscription\PlansModel;
+use App\Models\Subscription\SubscriptionsModel;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -149,7 +153,19 @@ class UsersController extends Controller
             return abort(Response::HTTP_NOT_FOUND);
         }
 
-        return view('admin.users.edit', compact('data'));
+        // 1 - show his payment list
+        // 2 - show his last subscription
+
+        // payments
+        $query      = PaymentsModel::where(['user_id' => $data->id , 'status' => 'paid']);
+        $sum        = $query->count('id');
+        $payments   = $query->paginate(100);
+
+        // subscription
+        $subscription = SubscriptionsModel::where("user_id", $data->id)->first();
+        $plans         = PlansModel::all();
+
+        return view('admin.users.edit', compact('data' , 'payments', 'subscription', 'plans'));
     }
 
     public function edit_action(Request $request)
@@ -246,4 +262,107 @@ class UsersController extends Controller
         $user->delete();
         return redirect()->route('admin.users.home');
     }
+
+    // Start impersonation
+    public function impersonate($userId)
+    {
+        if (Auth::guard('admin')->check()) 
+        {
+            // Save current admin session
+            session()->put('impersonate', Auth::guard('admin')->id());
+
+            // Login as the target user
+            Auth::guard('client')->loginUsingId($userId);            
+
+            return redirect(route('client.home'))->with('success', 'You are now impersonating the user.');
+        }
+
+        return redirect()->back()->with('error', 'Unauthorized action.');
+    }
+
+    // Stop impersonation
+    public function stopImpersonation(Request $request)
+    {
+        if (session()->has('impersonate')) 
+        {
+            // get current user id
+            $user_id = Auth::guard('client')->user()->id;
+
+            // Get the original super admin ID
+            $superAdminId = session()->get('impersonate');
+
+            // Logout the current user
+            Auth::guard('client')->logout();            
+
+            // Login back as super admin
+            Auth::guard('admin')->loginUsingId($superAdminId);
+
+            // Remove impersonation session
+            session()->forget('impersonate');
+
+            return redirect(route('admin.users.edit.form' , $user_id))->with('success', __('back_to_original_account') );
+        }
+
+        return redirect()->back()->with('error', 'No impersonation session found.');
+    }
+
+
+    // update user subcription date & plan
+    public function update_user_subcription(Request $request)
+    {
+
+
+        $rules = [
+            // 'estimated_date' => 'date_format:Y-m-d',
+            'end_date' => 'required|after_or_equal:today',//   . now()->toDateString(),
+        ];
+        
+        $messages = [
+            'end_date.after_or_equal'  => __('after_or_equal'),            
+        ];
+        
+        $validator = Validator::make($request->all(), $rules, $messages);
+        
+        if ($validator->fails() == false) {
+                        
+            $data = [
+                'end_date'  => $request->end_date,
+                'plan_id'   => $request->plan,
+                // 'phone' => $request->phone,                
+            ];        
+    
+            $user = SubscriptionsModel::where('user_id', $request->id)->update($data);
+    
+            if ($user) {
+    
+                return back()->with(['success' => __('subscription_updated_successfuly')]);
+    
+            } else {
+    
+                
+                return back()
+                ->withErrors(['error' => __('faild_to_save')])
+                ->withInput($request->all());
+            
+            }
+
+        }else{                    
+
+            $error     = $validator->errors();
+            $allErrors = "";
+
+            // dd($error);
+            
+            foreach ($error->all() as $err) {
+                $allErrors .= "<li>" . $err . "</li>";
+            }
+
+            return back()
+                ->withErrors(['error' => $allErrors])
+                ->withInput($request->all());
+
+        }                
+
+    }
+
 }

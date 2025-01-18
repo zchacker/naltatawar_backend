@@ -6,8 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Auth\UsersModel;
 use App\Models\Property\FilesModel;
 use App\Models\Property\PropertyModel;
+use App\Models\Subscription\SubscriptionsModel;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
@@ -24,6 +27,21 @@ class PropertyController extends Controller
         $type       = $request->user()->account_type;
         $max_items  = $request->user()->subscription->plan->items;
         $items_used = 0;
+
+        // validate the subscription
+        $subscription           = SubscriptionsModel::where('user_id' , $request->user()->id)->first();
+        $subscription_end_date  = Carbon::parse($subscription->end_date);
+        $today                  = Carbon::today();
+
+        $valid_subscribe = false;
+
+        if($subscription_end_date->lt($today))
+        {
+            $valid_subscribe = false;
+        }else{
+            $valid_subscribe = true;
+        }        
+        
 
         if($type == 3) // this is agent sub user
         {
@@ -56,13 +74,62 @@ class PropertyController extends Controller
         $sum        = $query->count('id');
         $propreties = $query->paginate(50);
 
-        return view('client.propreties.list', compact('propreties' , 'max_items', 'items_used'));
+        return view('client.propreties.list', compact('propreties' , 'max_items', 'items_used', 'valid_subscribe'));
     }
 
     // to check langaue 
     // https://polylang.pro/doc/rest-api/
     public function create(Request $request)
     {
+
+        // check if the user allowed to add a new item
+        $type       = $request->user()->account_type;
+        $max_items  = $request->user()->subscription->plan->items;
+        $items_used = 0;
+
+        if($type == 3) // this is agent sub user
+        {
+            // find who is parent account, to check and update data to it
+            $parent        = $request->user()->parent;
+            $manager_data  = UsersModel::where('id', $parent)->first();
+
+            if($manager_data)
+            {
+                $items_used = $manager_data->items_added;
+            }
+
+        }else{ // find account manager max items
+            
+            $items_used = $request->user()->items_added ;
+
+        }
+
+        // stop here
+        if(($max_items - $items_used) <= 0)
+        {
+            return abort(Response::HTTP_FORBIDDEN , __('max_items_reached'));  
+        }
+
+        // validate the subscription
+        $subscription           = SubscriptionsModel::where('user_id' , $request->user()->id)->first();
+        $subscription_end_date  = Carbon::parse($subscription->end_date);
+        $today                  = Carbon::today();
+
+        $valid_subscribe = false;
+
+        if($subscription_end_date->lt($today))
+        {
+            $valid_subscribe = false;
+        }else{
+            $valid_subscribe = true;
+        }    
+
+        // stop here
+        if($valid_subscribe == false)
+        {
+            return abort(Response::HTTP_FORBIDDEN , __('subscription_expired'));            
+        } 
+
         return view('client.propreties.create');
     }
 
@@ -101,7 +168,28 @@ class PropertyController extends Controller
                     ->withInput($request->all());
             }
 
+        } 
+        
+        // validate the subscription
+        $subscription           = SubscriptionsModel::where('user_id' , $request->user()->id)->first();
+        $subscription_end_date  = Carbon::parse($subscription->end_date);
+        $today                  = Carbon::today();
+
+        $valid_subscribe = false;
+
+        if($subscription_end_date->lt($today))
+        {
+            $valid_subscribe = false;
+        }else{
+            $valid_subscribe = true;
         }    
+
+        if($valid_subscribe == false)
+        {
+            return back()
+                ->withErrors(['error' => __('subscription_expired')])
+                ->withInput($request->all());
+        }        
 
         // data from user request
         $cover_img_id   = $request->cover_img;        

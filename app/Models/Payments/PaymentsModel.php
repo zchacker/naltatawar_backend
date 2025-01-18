@@ -2,6 +2,7 @@
 
 namespace App\Models\Payments;
 
+use App\Models\Auth\UsersModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -50,4 +51,10 @@ class PaymentsModel extends Model
             // 'password' => 'hashed',
         ];
     }
+
+    public function user()
+    {
+        return $this->hasOne(UsersModel::class, "id", "user_id");
+    }
+
 }

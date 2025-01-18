@@ -14,3 +14,11 @@
 .active_nav_item{
     @apply bg-primary
 }
+
+fieldset{
+    @apply border border-gray-400 p-4 rounded-md
+}
+
+legend{
+    @apply font-bold text-xl
+}
