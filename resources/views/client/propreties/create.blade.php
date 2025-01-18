@@ -1,4 +1,8 @@
-@include('client.header')
+@if (Auth::guard('agent')->check())
+    @include('agent.header')
+@else
+    @include('client.header')
+@endif
 
 <div class="mt-4 flex flex-col gap-8">
     <h2 class="font-bold text-xl"> {{__('create_proprety')}} </h2>
@@ -290,4 +294,9 @@
     }
 </script>
 
-@include('client.footer')
+
+@if (Auth::guard('agent')->check())
+    @include('agent.footer')
+@else
+    @include('client.footer')
+@endif

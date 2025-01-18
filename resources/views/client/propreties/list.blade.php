@@ -1,4 +1,8 @@
-@include('client.header')
+@if (Auth::guard('agent')->check())
+    @include('agent.header')
+@else
+    @include('client.header')
+@endif
 
 <div class="mt-4 flex flex-col gap-4">
     <h2 class="font-bold text-xl"> {{__('your_properties')}} </h2>  
@@ -67,7 +71,7 @@
     function no_add_item(){
 
         @if($valid_subscribe)
-        
+
             Swal.fire({
                 title: 'خطأ',
                 text: `{{ __('max_items_reached') }}`,
@@ -98,4 +102,8 @@
     }
 </script>
 
-@include('client.footer')
+@if (Auth::guard('agent')->check())
+    @include('agent.footer')
+@else
+    @include('client.footer')
+@endif

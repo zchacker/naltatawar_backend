@@ -100,13 +100,7 @@ Route::group(['middleware' => ['auth:client']], function () {
     // home dashboard
     Route::get('/home', [\App\Http\Controllers\Client\HomeController::class, 'home'])->name('client.home');
     
-    // real estate
-    Route::get('/properties', [\App\Http\Controllers\Client\PropertyController::class, 'list'])->name('client.property.list');
-    Route::get('/properties/create', [\App\Http\Controllers\Client\PropertyController::class, 'create'])->name('client.property.create');
-    Route::post('/properties/create/action', [\App\Http\Controllers\Client\PropertyController::class, 'create_action'])->name('client.property.create.action');
-    
-    Route::post('/file/upload', [\App\Http\Controllers\Client\PropertyController::class, 'uploadLargeFiles'])->name('client.property.file.upload');    
-
+   
     // contact requests    
     Route::get('/contacts/home', [\App\Http\Controllers\Client\ContactRequestController::class, 'home'])->name('client.contacts.home');
     Route::get('/contacts/details/{id}', [\App\Http\Controllers\Client\ContactRequestController::class, 'details'])->name('client.contacts.details');
@@ -175,3 +169,19 @@ Route::group(['middleware' => ['auth:agent'] , 'prefix' => 'agent'], function ()
     Route::get('/logout', [\App\Http\Controllers\Auth\LogoutController::class, 'agent_logout'])->name('agent.logout');
 
 });
+
+// shared urls
+
+Route::group(['middleware' => ['auth:agent,client'] ], function () { 
+
+    // real estate
+    Route::get('/properties', [\App\Http\Controllers\Client\PropertyController::class, 'list'])->name('client.property.list');
+    Route::get('/properties/create', [\App\Http\Controllers\Client\PropertyController::class, 'create'])->name('client.property.create');
+    Route::post('/properties/create/action', [\App\Http\Controllers\Client\PropertyController::class, 'create_action'])->name('client.property.create.action');
+    
+    Route::post('/file/upload', [\App\Http\Controllers\Client\PropertyController::class, 'uploadLargeFiles'])->name('client.property.file.upload');    
+
+
+});
+
+ 

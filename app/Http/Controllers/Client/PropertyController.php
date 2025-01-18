@@ -25,11 +25,34 @@ class PropertyController extends Controller
     {
         // check if the user allowed to add a new item
         $type       = $request->user()->account_type;
-        $max_items  = $request->user()->subscription->plan->items;
+        $max_items  = 0;
         $items_used = 0;
+        $user_id    = 0;                       
+
+        if($type == 3) // this is agent sub user
+        {
+            $max_items  = $request->user()->parent()->subscription->plan->items;
+            // find who is parent account, to check and update data to it
+            $parent        = $request->user()->parent;
+            $user_id       = $parent;
+            $manager_data  = UsersModel::where('id', $parent)->first();
+
+            if($manager_data)
+            {
+                $items_used = $manager_data->items_added;
+            }
+
+        }else{ // find account manager max items
+            
+            $user_id    = $request->user()->id;
+            $max_items  = $request->user()->subscription->plan->items;
+            $items_used = $request->user()->items_added ;
+
+        }
+
 
         // validate the subscription
-        $subscription           = SubscriptionsModel::where('user_id' , $request->user()->id)->first();
+        $subscription           = SubscriptionsModel::where('user_id' , $user_id)->first();
         $subscription_end_date  = Carbon::parse($subscription->end_date);
         $today                  = Carbon::today();
 
@@ -40,27 +63,10 @@ class PropertyController extends Controller
             $valid_subscribe = false;
         }else{
             $valid_subscribe = true;
-        }        
+        }
         
 
-        if($type == 3) // this is agent sub user
-        {
-            // find who is parent account, to check and update data to it
-            $parent        = $request->user()->parent;
-            $manager_data  = UsersModel::where('id', $parent)->first();
-
-            if($manager_data)
-            {
-                $items_used = $manager_data->items_added;
-            }
-
-        }else{ // find account manager max items
-            
-            $items_used = $request->user()->items_added ;
-
-        }
-
-        $query  = PropertyModel::where('parent_id', $request->user()->id);
+        $query  = PropertyModel::where('parent_id', $user_id);
 
          // Check if the "query" input exists
         if ($request->filled('query')) {
@@ -84,13 +90,16 @@ class PropertyController extends Controller
 
         // check if the user allowed to add a new item
         $type       = $request->user()->account_type;
-        $max_items  = $request->user()->subscription->plan->items;
+        $max_items  = 0;
         $items_used = 0;
+        $user_id    = 0;
 
         if($type == 3) // this is agent sub user
         {
+            $max_items  = $request->user()->parent()->subscription->plan->items;
             // find who is parent account, to check and update data to it
             $parent        = $request->user()->parent;
+            $user_id       = $parent;
             $manager_data  = UsersModel::where('id', $parent)->first();
 
             if($manager_data)
@@ -100,6 +109,8 @@ class PropertyController extends Controller
 
         }else{ // find account manager max items
             
+            $user_id    = $request->user()->id;
+            $max_items  = $request->user()->subscription->plan->items;
             $items_used = $request->user()->items_added ;
 
         }
@@ -111,7 +122,7 @@ class PropertyController extends Controller
         }
 
         // validate the subscription
-        $subscription           = SubscriptionsModel::where('user_id' , $request->user()->id)->first();
+        $subscription           = SubscriptionsModel::where('user_id' , $user_id)->first();
         $subscription_end_date  = Carbon::parse($subscription->end_date);
         $today                  = Carbon::today();
 
