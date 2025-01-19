@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\FileUploadJob;
+use App\Jobs\PropretyAPIUpdate;
 use App\Models\Auth\UsersModel;
 use App\Models\Property\FilesModel;
 use App\Models\Property\PropertyModel;
@@ -205,98 +207,13 @@ class PropertyController extends Controller
         // data from user request
         $cover_img_id   = $request->cover_img;        
         $imageIds       = $request->input('images'); // Example: [1, 2, 3]
-        $videoIds       = $request->input('videos'); // Example: [1, 2, 3]   
-
-        /*
-        // cover image
-        
-        $cover_img_file = FilesModel::find($cover_img_id);
-        $cover_img      = $cover_img_file->wp_id;// save this in wordpress api
-
-        // this is wp file IDs
-        $images = [];
-        $videos = [];             
-
-        if($imageIds != null)
-        // Process the IDs (e.g., assign to the current user or create relationships)
-        foreach ($imageIds as $imageId) {
-
-            // Example: Mark each file as used
-            FilesModel::where('id', $imageId)->update(['used' => 1]);
-
-            $file = FilesModel::find($imageId); // Retrieve the record by ID
-
-            if ($file) {
-                $wp_id = $file->wp_id; // Access column data
-                
-                array_push($images,  $wp_id );
-
-                // Update the record
-                $file->update(['used' => 1]);                
-            }
-
-        }
-
-        if($videoIds != null)
-        foreach ($videoIds as $videoId) {
-            
-            // Example: Mark each file as used
-            FilesModel::where('id', $videoId)->update(['used' => 1]);
-
-            $file = FilesModel::find($videoId); // Retrieve the record by ID
-
-            if ($file) {
-                $wp_id = $file->wp_id; // Access column data
-                
-                array_push($videos,  $wp_id );
-
-                // Update the record
-                $file->update(['used' => 1]);                
-            }
-
-        }
-        
-        if($imageIds != null)
-        $images = array_map('intval', $images); // Ensure all values are integers
-
-        if($videoIds != null)
-        $videos = array_map('intval', $videos); // Ensure all values are integers
-        */
-
-        // sometimes the wordpress API not response !!
+        $videoIds       = $request->input('videos'); // Example: [1, 2, 3]        
 
         //save some data in wp to update it later       
         $response = Http::withHeaders([
             'Authorization' => 'Basic ' . base64_encode(env('WORDPRESS_USER') . ":" . env('WORDPRESS_KEY')),
         ])->post(env('WORDPRESS_API') . 'real_estate/', [
-            'title' =>  $request->title,
-            
-            // "real_estate_purpose" => $request->purpose,
-            // "real_estate_type" => $request->type,
-
-            // 'real_estate_title' =>  $request->title,
-            // 'real_estate_short__description' =>  $request->description,
-            // 'real_estate_cover_img' => $cover_img,
-            // 'real_estate_city' => $request->city,
-            // 'real_estate_price' =>  $request->price,
-            // 'real_estate_neighborhood' =>  $request->neighborhood,
-            // 'real_estate_location' => $request->location,
-            // 'real_estate_images' => $images,
-            // 'real_estate_videos' => $videos,
-            
-            // 'real_estate_space' =>  $request->space,
-            // 'real_estate_rooms' =>  $request->rooms,
-            // 'real_estate_kitchen' => $request->kitchen,
-            // 'real_estate_toilets' => $request->bathrooms,
-            // 'real_estate_living_room' => $request->has('living_room') ? 'نعم' : 'لا',
-            // 'real_estate_halls' => $request->has('hall') ? 'نعم' : 'لا',
-            // 'real_estate_elevator' => $request->has('elevator') ? 'نعم' : 'لا',
-            // 'real_estate_fiber' => $request->has('fiber') ? 'نعم' : 'لا',
-            // 'real_estate_school' => $request->has('school') ? 'نعم' : 'لا',
-            // 'real_estate__musque' => $request->has('mosque') ? 'نعم' : 'لا',
-            // 'real_estate_garden' => $request->has('garden') ? 'نعم' : 'لا',
-            // 'real_estate_swim_pool' => $request->has('pool') ? 'نعم' : 'لا',
-            
+            'title'  =>  $request->title,                                    
             'status' => 'pending'
         ]);
         
@@ -379,45 +296,25 @@ class PropertyController extends Controller
                 'status'            => 'pending'
             ]);
 
-            // this data to be sent to the wordpress website
-            $proprety_data = [
+            if($proprety)
+            {
+                // this perfect
+            }else{
+                // faild to save
+                return back()
+                ->withErrors(['error' => __('faild_to_save') . ' ' . $response->status()])
+                ->withInput($request->all());
+            }
+            
 
-                "id"                => $data["id"],
-                "title"             => $request->title,                
-                "description"       => $request->description,                
-                "type"              => $request->type,                
-                "purpose"           => $request->purpose,
-                "license_no"        => $request->license_no,   
-                "location"          => $request->location,                
-                "city"              => $request->city, 
-                "neighborhood"      => $request->neighborhood,                
-                "price"             => $request->price,                
-                
-                "space"             => $request->space,                
-                "rooms"             => $request->rooms,                
-                "bathrooms"         => $request->bathrooms,                
-                "kitchen"           => $request->kitchen,                
-                "hall"              => $request->has('hall') ? TRUE : FALSE,                
-                "living_room"       => $request->has('living_room') ? TRUE : FALSE,                
-                "elevator"          => $request->has('elevator') ? TRUE : FALSE,                
-                "fiber"             => $request->has('fiber') ? TRUE : FALSE,                
-                "school"            => $request->has('school') ? TRUE : FALSE,                
-                "mosque"            => $request->has('mosque') ? TRUE : FALSE,                
-                "pool"              => $request->has('pool') ? TRUE : FALSE,                
-                "garden"            => $request->has('garden') ? TRUE : FALSE,
-                
-                'status'            => 'pending'                
-            ];
-
-            $proprety_data = json_decode(json_encode($proprety_data));
-
+            /*
             dispatch(function () use ( $proprety_data, $cover_img_id, $imageIds, $videoIds ) { 
                 
                 $this->update_wp_property_post( $proprety_data, $cover_img_id, $imageIds, $videoIds );// add more data to wordpress post later
             
             })->delay(now()->addMinutes(3))
             ->onQueue('save_proprety');
-
+            */
             
             return back()->with(['success' => __('added_successfuly')]);
 
@@ -431,6 +328,7 @@ class PropertyController extends Controller
         }
     }
 
+    // we not use this any more ....
     // this is a workaround for updating the wordpress post in background
     public function update_wp_property_post( $proprety_data, $cover_img_id, $imageIds, $videoIds )
     {
@@ -552,36 +450,20 @@ class PropertyController extends Controller
 
             // save it localy
             $disk = Storage::disk(config('filesystems.default'));
-            $path = $disk->putFileAs('uploads', $file, $fileName);
-            
-            // push it to storage server
-            /*
-            $response_img = Http::withHeaders([
-                'Authorization' => 'Basic ' . base64_encode(env('WORDPRESS_USER') . ":" . env('WORDPRESS_KEY')),                
-            ])->attach(
-                'file', // The file key as expected by WordPress
-                file_get_contents($file->getPathname()),
-                $file->getClientOriginalName()    
-            )->post(env('WORDPRESS_API') . "media");
-            */
-    
-            // dd($image->getClientOriginalName());
-            // dd($response_img->json());
-
-            //$data = $response_img->json();
+            $path = $disk->putFileAs('uploads', $file, $fileName);                       
 
             $file_model           = new FilesModel();
-            $file_model->user_id  = $request->user()->id;
-            // $file_model->url      = $data["source_url"];
-            // $file_model->wp_id    = $data["id"];
+            $file_model->user_id  = $request->user()->id;           
             $file_model->used     = 0;
             $file_model->save();
 
             $file_id =  $file_model->id; // Retrieve the ID of the newly inserted row
 
             // run this task in background queue
+            FileUploadJob::dispatch( $file_id , $path );
 
-            dispatch(function () use ($file_id , $path) {                 
+            /*
+            dispatch(function () use ( $file_id , $path ) {                 
 
                 // push it to storage server
                 $response_img = Http::withHeaders([
@@ -607,6 +489,7 @@ class PropertyController extends Controller
                 Storage::delete($path);                
                 
             })->onQueue('save_file');
+            */
             
 
             // delete chunked file

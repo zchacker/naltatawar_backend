@@ -82,8 +82,9 @@ class LoginController extends Controller
                                                                     
                         switch ($user_type) {
                             
-                            case "admin":                                
-                                return redirect()->intended(route('admin.home'));                                
+                            case "admin":                                                  
+                                // return redirect()->intended(route('admin.home'));                                
+                                return redirect()->route('admin.home');
                                 break;
                             case "client":                                                       
                                 return redirect()->intended(route('client.home'));                                

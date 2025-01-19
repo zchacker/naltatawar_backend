@@ -4,7 +4,7 @@
     <div class="flex items-center justify-center pt-10">
         <img src="{{ asset('imgs/n-logo.png') }}" class="w-[200px]" alt="web site logo">
     </div>
-
+    
     <!-- login form -->
     <div class="flex flex-col space-y-2 w-[400px] mx-auto mt-10 items-center">
         <form action="{{ route('auth.login.action') }}" method="post" class="flex flex-col space-y-4 w-full">
