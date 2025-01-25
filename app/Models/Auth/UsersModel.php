@@ -33,7 +33,8 @@ class UsersModel extends Authenticatable
         'email_verified_at',
         'code',
         'permissions',
-        'items_added'        
+        'items_added',
+        'last_reset'        
     ];
 
     /**

@@ -29,6 +29,7 @@ class PropretyAPIUpdate implements ShouldQueue
      */
     public function handle(): void
     {
+        // check if all images are uploaded or not, so retry add it correctly !!!!
         
         // cover image
         $cover_img_file = FilesModel::find($this->cover_img_id);

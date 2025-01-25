@@ -171,7 +171,6 @@ Route::group(['middleware' => ['auth:agent'] , 'prefix' => 'agent'], function ()
 });
 
 // shared urls
-
 Route::group(['middleware' => ['auth:agent,client'] ], function () { 
 
     // real estate
@@ -180,8 +179,11 @@ Route::group(['middleware' => ['auth:agent,client'] ], function () {
     Route::post('/properties/create/action', [\App\Http\Controllers\Client\PropertyController::class, 'create_action'])->name('client.property.create.action');
     
     Route::post('/file/upload', [\App\Http\Controllers\Client\PropertyController::class, 'uploadLargeFiles'])->name('client.property.file.upload');    
-
-
+    
+    
 });
+
+Route::get('/reset', [\App\Http\Controllers\Subscriptions\PaymentController::class, 'reset'])->name('reset');
+
 
  

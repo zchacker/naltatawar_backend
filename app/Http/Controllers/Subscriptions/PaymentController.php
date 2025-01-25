@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Subscriptions;
 
 use App\Http\Controllers\Controller;
+use App\Models\Auth\UsersModel;
 use App\Models\Payments\CardsTokensModel;
 use App\Models\Payments\PaymentsModel;
 use App\Models\Subscription\PlansModel;
@@ -127,5 +128,23 @@ class PaymentController extends Controller
     {
         $payment_id    = Session::get('payment_id');
         return view('payments.success', compact('payment_id'));
+    }
+
+    // resetting the quota
+    public function reset(Request $request)
+    {
+        $users = UsersModel::where('last_reset', '<=', Carbon::now()->subDays(30))
+        // ->where('account_type' , 2)
+        ->orWhereNull('last_reset')
+        ->get();
+
+        foreach ($users as $user) {
+            $user->update([
+                'items_added' => 0,
+                'last_reset' => Carbon::now(),
+            ]);
+        }
+
+        return "Quotas reset for applicable users.";
     }
 }
