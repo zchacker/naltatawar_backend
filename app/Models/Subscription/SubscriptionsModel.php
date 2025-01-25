@@ -2,6 +2,7 @@
 
 namespace App\Models\Subscription;
 
+use App\Models\Auth\UsersModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -52,6 +53,11 @@ class SubscriptionsModel extends Model
     public function plan()
     {
         return $this->hasOne(PlansModel::class, "id", "plan_id");
+    }
+
+    public function user()
+    {
+        return $this->hasOne(UsersModel::class, "id", "user_id");
     }
     
 }

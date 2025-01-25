@@ -41,6 +41,6 @@ class ResetQuotaForUsers extends Command
         }
         
         $this->info('Quotas reset for applicable users.');
-        
+
     }
 }

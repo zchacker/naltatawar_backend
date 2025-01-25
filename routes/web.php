@@ -96,6 +96,7 @@ Route::group(['middleware' => ['auth:client']], function () {
     Route::get('/payment/pay/{plan}', [\App\Http\Controllers\Subscriptions\PaymentController::class, 'pay'])->name('payment.pay');
     Route::get('/payment/callback', [\App\Http\Controllers\Subscriptions\PaymentController::class, 'callback'])->name('payment.callback');
     Route::get('/payment/success', [\App\Http\Controllers\Subscriptions\PaymentController::class, 'success'])->name('payment.success');
+    Route::get('/payment/faild', [\App\Http\Controllers\Subscriptions\PaymentController::class, 'faild'])->name('payment.faild');
     
     // home dashboard
     Route::get('/home', [\App\Http\Controllers\Client\HomeController::class, 'home'])->name('client.home');

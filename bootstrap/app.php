@@ -17,7 +17,8 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withSchedule(function (Schedule $schedule) {
         // we add this to run 
-        $schedule->command('app:reset-quota-for-users')->everyMinute();// dailyAt('00:00');
+        $schedule->command('app:reset-quota-for-users')->dailyAt('00:00');// reset quota for users
+        $schedule->command('app:charge-subscriptions')->twiceDaily(1, 13);// charge subscriptions
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
