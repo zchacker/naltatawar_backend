@@ -123,8 +123,16 @@ class PaymentController extends Controller
         } else {
             // Handle the error
             // go to error page or 404 page
+            $data    = $response->json();
+            $message = $data["message"];
+
+            Session::put( "payment_error" , $message ); // save the reason of faild payment
+                
+            //redirect to faild page
+            return redirect()->route('payment.faild');
+
             //return $response->body();
-            dd( $response->body() , $response->json() );
+            //dd( $response->body() , $response->json() );
         }
     }
 

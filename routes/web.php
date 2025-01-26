@@ -10,7 +10,7 @@ Route::get('/', function () {
 });
 
 Route::get('/test/', function(){
-    return view('test');
+    return view('auth.verify');
 });
 
 Route::get('/', [\App\Http\Controllers\Auth\LoginController::class, 'index'])->name('home');
@@ -24,6 +24,9 @@ Route::post('/sign_up/action', [\App\Http\Controllers\Auth\SignupController::cla
 
 Route::get('/forgot_password', [\App\Http\Controllers\Auth\ForgotPasswordController::class, 'index'])->name('auth.forgot_password');
 Route::get('/resetpassword/{id}/{token}', [\App\Http\Controllers\Auth\ForgotPasswordController::class, 'index'])->name('auth.forgot_password');
+
+Route::get('/verify-email', [\App\Http\Controllers\Auth\SignupController::class, 'show_otp'])->name('auth.otp.show');
+Route::post('/verify-otp', [\App\Http\Controllers\Auth\SignupController::class, 'confirm_otp'])->name('auth.otp.confirm');
 
 
 Route::get('/verify_otp', [\App\Http\Controllers\Auth\ForgotPasswordController::class, 'verify'])->name('auth.verify');
