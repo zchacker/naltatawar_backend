@@ -1,7 +1,15 @@
 @include('admin.header')
 
 <div class="mt-4 flex flex-col gap-8">
-    <h2 class="font-bold text-xl"> {{__('support')}} </h2>      
+    <h2 class="font-bold text-xl"> {{__('support')}} </h2>    
+    
+    <div>
+        <form action="{{ route('admin.support.list') }}" method="get" class="flex gap-2 items-center">
+            <input type="text" name="query" class="input w-1/2" placeholder=" رقم التذكرة" value="{{ old('query') }}" />
+            <button type="submit" class="submit_btn">بحث</button>
+            <a href="{{ route('admin.support.list') }}">مسح</a>
+        </form>
+    </div>
 
     <table class="table-fixed rounded-md overflow-hidden">
         <span> {{ __('total') }} ({{ $sum }})  </span>

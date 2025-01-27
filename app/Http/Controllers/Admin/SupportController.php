@@ -15,6 +15,16 @@ class SupportController extends Controller
     {
         
         $query      = SupportModel::query();
+
+        if ($request->filled('query'))
+        {
+            $searchTerm = $request->input('query');
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('id', 'LIKE', "%{$searchTerm}%");                
+                //->orWhere('phone', 'LIKE', "%{$searchTerm}%");
+            });
+        }
+
         $sum        = $query->count('id');
         $items      = $query->paginate(100);
 

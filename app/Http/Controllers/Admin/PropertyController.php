@@ -35,7 +35,7 @@ class PropertyController extends Controller
         // check if the user allowed to add a new item
         $query  = PropertyModel::where('parent_id', $request->user()->id);        
 
-         // Check if the "query" input exists
+        // Check if the "query" input exists
         if ($request->filled('query')) {
             $searchTerm = $request->input('query');
             $query->where(function ($q) use ($searchTerm) {

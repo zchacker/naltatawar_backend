@@ -8,6 +8,14 @@
         <span class="font-medium text-white"> {{__('add_new')}} </span>
     </a>    
 
+    <div>
+        <form action="{{ route('admin.users.home') }}" method="get" class="flex gap-2 items-center">
+            <input type="text" name="query" class="input w-1/2" placeholder=" ابحث عن مستخدم، بالاسم أو الايميل او الهاتف " value="{{ old('query') }}" />
+            <button type="submit" class="submit_btn">بحث</button>
+            <a href="{{ route('admin.users.home') }}">مسح</a>
+        </form>
+    </div>
+
     <table class="table-fixed rounded-md overflow-hidden">
         <span> {{ __('users') }} ({{ $sum }})  </span>
         <thead class="text-md text-gray-700 uppercase bg-blue-200">

@@ -20,6 +20,17 @@ class UsersController extends Controller
     public function home(Request $request)
     {    
         $query      = UsersModel::where('account_type', 2);
+
+        if ($request->filled('query'))
+        {
+            $searchTerm = $request->input('query');
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('name', 'LIKE', "%{$searchTerm}%")
+                ->orWhere('email', 'LIKE', "%{$searchTerm}%")
+                ->orWhere('phone', 'LIKE', "%{$searchTerm}%");
+            });
+        }
+
         $sum        = $query->count('id');
         $contacts   = $query->paginate(100);
 
