@@ -30,6 +30,7 @@
     "subscription_expired":"اشتراكك انتهى، يرجى تجديد الاشتراك",
     "faild_to_save":"فشل حفظ البيانات",
     "unknown_error":"خطأ غير معروف",
+    "card_not_saved_error":"لم يتم حفظ البطاقة",
     "after_or_equal":"التاريخ يجب أن يكون اليوم او المستقبل",
 
     "name_required": "يجب كتابة الاسم",
@@ -74,6 +75,15 @@
     "max_users_reached":"تم الوصول للعدد الاقصى من المستخدمين",
 
     "payments":"المدفوعات",
+    "credi_cards":"بطاقات الدفع الالكتروني",
+    "card_digits":"رقم البطاقة",
+    "card_company":"العلامة التجارية",
+    "save_card":"حفظ البطاقة",
+    "card_number":"رقم البطاقة",
+    "ex_month":"تاريخ الانتهاء بالشهر",
+    "ex_year":"تاريخ الانتهاء بالسنة",
+    "cvv":"رمز الامان cvv خلف البطاقة",
+    "card_saved_successfully":"تم حفظ البطاقة بنجاح",
     "billing_invoice":"الفوترة والمدفوعات",
     "total":"الاجمالي",
     "status":"الحالة",
@@ -136,6 +146,7 @@
 
     "ok":"حسنا",
 
+    "added_date":"تاريخ الاضافة",
     "update_data":"تحديث البيانات",
     "personal_data":"البيانات الشخصية",
     "update_password":"تحديث كلمة المرور",

@@ -81,6 +81,8 @@ class PaymentController extends Controller
                         $card_token->user_id     = $request->user()->id;
                         $card_token->card_token  = $data['source']['token'];
                         $card_token->card_digits = $data['source']['number'];
+                        $card_token->company     = $data['source']['company'];
+                        
                         $card_token->save(); // save card token
                     }
     

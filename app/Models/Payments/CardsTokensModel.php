@@ -23,7 +23,8 @@ class CardsTokensModel extends Model
     protected $fillable = [        
         'user_id',
         'card_token',
-        'card_digits'
+        'card_digits',
+        'company'
     ];
 
     /**

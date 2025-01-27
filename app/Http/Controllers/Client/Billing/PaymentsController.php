@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Client\Billing;
 
 use App\Http\Controllers\Controller;
+use App\Models\Payments\CardsTokensModel;
 use App\Models\Payments\PaymentsModel;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Http;
 use Salla\ZATCA\GenerateQrCode;
 use Salla\ZATCA\Tags\InvoiceDate;
 use Salla\ZATCA\Tags\InvoiceTaxAmount;
@@ -58,6 +60,76 @@ class PaymentsController extends Controller
         // <img src="$displayQRCodeAsBase64" alt="QR Code" />
 
         return view('client.payments.invoice' , compact('formattedDate' , 'payment_data' , 'displayQRCodeAsBase64'));
+    }
+
+    public function list_cards(Request $request)
+    {
+        $query      = CardsTokensModel::where(['user_id' => $request->user()->id]);
+        $sum        = $query->count('id');
+        $cards      = $query->paginate(100);
+        
+        return view('client.payments.card', compact('cards', 'sum'));
+    }
+
+
+    public function delete(CardsTokensModel $card)
+    {
+        $card->delete();
+        
+        return redirect()->route('client.card.list');
+    }
+
+    public function add_card(Request $request)
+    {
+        return view( 'client.payments.save_card' );
+    }
+
+    public function save_card_callback(Request $request)
+    {
+        
+        $response = Http::withBasicAuth(env("PAYMENT_SECRET_KEY"), '')
+        ->get('https://api.moyasar.com/v1/payments/' . $_GET['id']);
+        
+        $data = $response->json();
+
+        // Check response status and data
+        if ($response->successful()) {
+                      
+            //dd($data);
+
+            if($data['status'] == 'verified')
+            {
+
+                // save card token
+                $card_token              = new CardsTokensModel();
+                $card_token->user_id     = $request->user()->id;
+                $card_token->card_token  = $data['source']['token'];
+                $card_token->card_digits = $data['source']['number'];
+                $card_token->company     = $data['source']['company'];
+                
+                $card_token->save(); // save card token
+    
+                return redirect()
+                ->route('client.card.list')
+                ->with(['success' => __('card_saved_successfully')]);
+
+            }else{
+
+                return redirect()
+                ->route('client.card.add')
+                ->withErrors(['error' => __('card_not_saved_error') . ' <br/>' . $data['source']['message'] ]);
+
+            }
+
+        }else{
+
+            return redirect()
+            ->route('client.card.add')
+            ->withErrors(['error' => __('card_not_saved_error') . ' <br/>' . $data['message'] ]);
+            //->withInput($request->all());
+
+        }
+
     }
 
 }

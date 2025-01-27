@@ -122,6 +122,11 @@ Route::group(['middleware' => ['auth:client']], function () {
     // payments
     Route::get('/payments/list', [\App\Http\Controllers\Client\Billing\PaymentsController::class, 'payments'])->name('client.payments');
     Route::get('/payments/invoice/{id}', [\App\Http\Controllers\Client\Billing\PaymentsController::class, 'invoice'])->name('client.invoice');
+    Route::get('/cards/list', [\App\Http\Controllers\Client\Billing\PaymentsController::class, 'list_cards'])->name('client.card.list');
+    Route::delete('/cards/delete/{card}', [\App\Http\Controllers\Client\Billing\PaymentsController::class, 'delete'])->name('client.card.delete');
+    
+    Route::get('/cards/add', [\App\Http\Controllers\Client\Billing\PaymentsController::class, 'add_card'])->name('client.card.add');
+    Route::get('/cards/save/callback', [\App\Http\Controllers\Client\Billing\PaymentsController::class, 'save_card_callback'])->name('client.card.callback');
     
     // support
     Route::get('/support/list', [\App\Http\Controllers\Client\SupportController::class, 'list'])->name('client.support.list');

@@ -1,10 +1,15 @@
 @include('client.header')
 
 <div class="mt-4 flex flex-col gap-8">
-    <h2 class="font-bold text-xl"> {{__('payments')}} </h2>   
+    
+    <h2 class="font-bold text-xl"> {{__('payments')}} </h2>               
+
+    <div class="flex gap-4 justify-between">
+        <span> {{ __('total') }} ({{ $sum }})  </span>
+        <a href="{{ route('client.card.list') }}" class="text-blue-400 font-bold text-md hover:underline">{{ __('credi_cards') }}</a>
+    </div>
 
     <table class="table-fixed rounded-md overflow-hidden">
-        <span> {{ __('total') }} ({{ $sum }})  </span>
         <thead class="text-md text-gray-700 uppercase bg-blue-200">
             <tr>
                 <th scope="col" class="px-6 py-3">#</th>
@@ -41,7 +46,28 @@
 
 <script>
     function confirmDelete() {
-        return confirm(" {{__('delete_confirmation')}}" );        
+        //return confirm(" {{__('delete_confirmation')}}" );
+
+        event.preventDefault(); // Prevent form submission initially
+        Swal.fire({
+            title: "{{ __('delete_confirmation') }}",
+            //text: "Are you sure you want to delete this?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "{{ __('comfirm') }}",
+            cancelButtonText: "{{ __('retreat') }}",
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Submit the form programmatically if confirmed
+                event.target.submit();
+            } else {
+                console.log("User cancelled deletion.");
+            }
+        });
+        
     }
 </script>
 
