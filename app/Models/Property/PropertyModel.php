@@ -16,12 +16,14 @@ class PropertyModel extends Model
 
     protected $table = 'property';
 
+    protected $primaryKey = 'id';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
-    protected $fillable = [        
+    protected $fillable = [                
         'user_id',
         'parent_id',
         'property_number',
@@ -77,7 +79,26 @@ class PropertyModel extends Model
 
     public function add_by()
     {
-        return $this->hasOne(UsersModel::class , 'id' , 'user_id')->first();
+        return $this->hasOne(UsersModel::class , 'id' , 'user_id');
+    }
+
+    public function images()
+    {
+        return $this->hasMany(PropertyFilesModel::class, 'property_id', 'id');
+        //->where('type', 'image');
+        //->orderBy('id', 'desc'); // Optional: Get the latest image
+    }
+    
+    public function videos()
+    {
+        return $this->hasMany(PropertyFilesModel::class, 'property_id', 'id')
+        ->where('type', 'video')
+        ->orderBy('id', 'desc'); // Optional: Get the latest image
+    }
+
+    public function cover()
+    {
+        return $this->hasOne(FilesModel::class, 'id' , 'cover_img');
     }
 
 }

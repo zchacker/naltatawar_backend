@@ -41,12 +41,12 @@ Route::group(['middleware' => ['auth:admin'] , 'prefix' => 'admin'], function ()
     // real estate
     Route::get('/properties', [\App\Http\Controllers\Admin\PropertyController::class, 'list'])->name('admin.property.list');
     Route::get('/properties/my', [\App\Http\Controllers\Admin\PropertyController::class, 'my_list'])->name('admin.property.list.my');
+    Route::get('/properties/edit/{id}', [\App\Http\Controllers\Admin\PropertyController::class, 'edit'])->name('admin.property.edit');
     Route::post('/properties/publish', [\App\Http\Controllers\Admin\PropertyController::class, 'publish_properity'])->name('admin.property.publish');
 
     // contact requests    
     Route::get('/contacts/home', [\App\Http\Controllers\Admin\ContactRequestController::class, 'home'])->name('admin.contacts.home');
-    Route::get('/contacts/details/{id}', [\App\Http\Controllers\Admin\ContactRequestController::class, 'details'])->name('admin.contacts.details');
-    
+    Route::get('/contacts/details/{id}', [\App\Http\Controllers\Admin\ContactRequestController::class, 'details'])->name('admin.contacts.details');    
     
     //users
     Route::get('/users/home', [\App\Http\Controllers\Admin\UsersController::class, 'home'])->name('admin.users.home');
@@ -185,6 +185,7 @@ Route::group(['middleware' => ['auth:agent,client'] ], function () {
     // real estate
     Route::get('/properties', [\App\Http\Controllers\Client\PropertyController::class, 'list'])->name('client.property.list');
     Route::get('/properties/create', [\App\Http\Controllers\Client\PropertyController::class, 'create'])->name('client.property.create');
+    Route::get('/properties/edit/{id}', [\App\Http\Controllers\Client\PropertyController::class, 'edit'])->name('client.property.edit');
     Route::post('/properties/create/action', [\App\Http\Controllers\Client\PropertyController::class, 'create_action'])->name('client.property.create.action');
     
     Route::post('/file/upload', [\App\Http\Controllers\Client\PropertyController::class, 'uploadLargeFiles'])->name('client.property.file.upload');    

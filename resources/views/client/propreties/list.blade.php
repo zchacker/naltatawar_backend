@@ -40,6 +40,7 @@
                     <th scope="col" class="px-6 py-3">معاينة</th>
                     <th scope="col" class="px-6 py-3">الحالة</th>
                     <th scope="col" class="px-6 py-3">تاريخ الاضافة</th>
+                    <th scope="col" class="px-6 py-3"> إجراء  </th>
                 </tr>
             </thead>
             <tbody>
@@ -59,6 +60,9 @@
                     </td>
                     <td class="px-6 py-4"> {{ __($proprety->status) }} </td>
                     <td class="px-6 py-4"> {{ $proprety->created_at }} </td>
+                    <td class="px-6 py-4"> 
+                        <a href="{{ route('client.property.edit' , $proprety->id) }}">تعديل</a>    
+                    </td>
                 </tr>
                 @endforeach        
             </tbody>

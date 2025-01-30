@@ -7,6 +7,7 @@ use App\Jobs\FileUploadJob;
 use App\Jobs\PropretyAPIUpdate;
 use App\Models\Auth\UsersModel;
 use App\Models\Property\FilesModel;
+use App\Models\Property\PropertyFilesModel;
 use App\Models\Property\PropertyModel;
 use App\Models\Subscription\SubscriptionsModel;
 use Carbon\Carbon;
@@ -270,8 +271,7 @@ class PropertyController extends Controller
                 "school"            => $request->has('school') ? TRUE : FALSE,                
                 "mosque"            => $request->has('mosque') ? TRUE : FALSE,                
                 "pool"              => $request->has('pool') ? TRUE : FALSE,                
-                "garden"            => $request->has('garden') ? TRUE : FALSE,                
-                              
+                "garden"            => $request->has('garden') ? TRUE : FALSE,                              
             ];
 
             $proprety = PropertyModel::create([
@@ -283,8 +283,8 @@ class PropertyController extends Controller
                 "cover_img"         => $cover_img_id,   
                 "type"              => $request->type,                
                 "purpose"           => $request->purpose,                
-                'images'            => implode(',', $imageIds ?? []),
-                'videos'            => implode(',', $videoIds ?? []),    
+                'images'            => implode( ',' , $imageIds ?? [] ),
+                'videos'            => implode( ',' , $videoIds ?? [] ),
                 "license_no"        => $request->license_no,   
                 "location"          => $request->location,                
                 "city"              => $request->city, 
@@ -299,6 +299,31 @@ class PropertyController extends Controller
             if($proprety)
             {
                 // this perfect
+                // add the images IDs
+                foreach($imageIds as $imageId)
+                {
+                    PropertyFilesModel::create([
+                        'type'          => 'image',
+                        'file_id'       => $imageId,
+                        'property_id'   => $proprety->id
+                    ]);
+                }
+
+                foreach($videoIds as $videoId)
+                {
+                    PropertyFilesModel::create([
+                        'type'          => 'video',
+                        'file_id'       => $videoId,
+                        'property_id'   => $proprety->id
+                    ]);
+                }
+
+                PropertyFilesModel::create([
+                    'type'          => 'cover',
+                    'file_id'       => $cover_img_id,
+                    'property_id'   => $proprety->id
+                ]);
+
             }else{
                 // faild to save
                 return back()
@@ -326,6 +351,33 @@ class PropertyController extends Controller
                 ->withInput($request->all());
 
         }
+    }
+
+    public function edit(Request $request)
+    {
+        $data = PropertyModel::where('id', '=', $request->id)
+        ->with([ 'images' , 'videos' , 'cover'])
+        ->first();
+
+        if($data == null)
+        {
+            return abort(Response::HTTP_NOT_FOUND);
+        }
+        
+        // if ($data->images()->isEmpty()) {
+        //     dump('No images found.');
+        // }
+
+        // dump( $data->images()->first()->file()->url );
+
+        // foreach($data->images()->get() as $file) {
+        //     dump($file->file()->url); // or do something else with $file
+        // }
+
+        // dd('hello');
+
+        return view('client.propreties.update' , compact('data'));
+
     }
 
     // we not use this any more ....

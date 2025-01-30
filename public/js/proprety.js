@@ -22,7 +22,20 @@ let cover_img_placeholder   = $('#cover_img_placeholder');
 let img_placeholder         = $('#img_placeholder');
 let vid_placeholder         = $('#vid_placeholder');
 
+function set_images(images) 
+{
+    this.images = images;
+}
 
+function set_videos(videos) 
+{
+    this.videos = videos;
+}
+
+function set_cover(cover)
+{
+    this.cover = cover;
+}
 
 let coverImageUploader = new Resumable({
     target: target_url,
