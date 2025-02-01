@@ -1,4 +1,4 @@
-var coverImg = 0;
+var coverImg = null;
 let uploadedFiles = {
     images: [],
     videos: []
@@ -265,7 +265,7 @@ function previewFile(file, container) {
             let fileName = $(this).data('file-name');
             imageUploader.cancel();// resetting            
             sendRemoveRequest(fileName, 'image');
-            $(this).parent().remove();
+            $(this).parent().remove();            
         });
 
         // Attach event listener to remove button
@@ -312,6 +312,7 @@ function storeFileId(id, fileName, container) {
 }
 
 function sendRemoveRequest(fileName, fileType) {
+    console.log(fileName);
     let fileId = $(`[data-file-name="${fileName}"]`).data('file-id');
     console.log("removed successfuly ", fileId);       
 
@@ -342,6 +343,7 @@ function sendRemoveRequest(fileName, fileType) {
 
 // On form submit, create hidden inputs for each number in the array
 $('#myform').on('submit', function(event) {
+
     const form = $(this);
 
     // disable submit button to avoid douple submit
@@ -368,12 +370,14 @@ $('#myform').on('submit', function(event) {
             .appendTo(form);
     });
 
-    // add cover hidden id        
-    $('<input>')
-        .attr('type', 'hidden')
-        .attr('name', `cover_img`) // e.g., videos[0][file_id]
-        .val(coverImg.file_id)
-        .appendTo(form);
+    if( coverImg != null ) {
+        // add cover hidden id        
+        $('<input>')
+            .attr('type', 'hidden')
+            .attr('name', `cover_img`) // e.g., videos[0][file_id]
+            .val(coverImg.file_id)
+            .appendTo(form);
+    }
 
     // add the token for csrf
     $('<input>')
@@ -387,8 +391,7 @@ $('#myform').on('submit', function(event) {
     // event.preventDefault(); // Prevent the default behavior
     // event.stopPropagation(); // Stop other event handlers
 
-    // Optional: Prevent form submission if the array is empty
-    
+    // Optional: Prevent form submission if the array is empty    
     if (uploadedFiles.images.length === 0 ){// && uploadedFiles.videos.length === 0) {
         submitBtn.removeAttr("disabled");
         event.preventDefault();

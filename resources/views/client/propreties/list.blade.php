@@ -50,7 +50,7 @@
                     <td class="px-6 py-4"> {{ $proprety->title }} </td>
                     <td class="px-6 py-4"> {{ $proprety->city }} </td>
                     <td class="px-6 py-4"> {{ $proprety->price }} </td>
-                    <td class="px-6 py-4"> {{ $proprety->add_by()->name }} </td>
+                    <td class="px-6 py-4"> {{ $proprety->add_by->name }} </td>
                     <td class="px-6 py-4"> 
                         @if($proprety->status == 'pending')
                         <a href="javascript:not_published()" class="text-blue-500">معاينة</a>

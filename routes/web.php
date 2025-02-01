@@ -185,8 +185,9 @@ Route::group(['middleware' => ['auth:agent,client'] ], function () {
     // real estate
     Route::get('/properties', [\App\Http\Controllers\Client\PropertyController::class, 'list'])->name('client.property.list');
     Route::get('/properties/create', [\App\Http\Controllers\Client\PropertyController::class, 'create'])->name('client.property.create');
-    Route::get('/properties/edit/{id}', [\App\Http\Controllers\Client\PropertyController::class, 'edit'])->name('client.property.edit');
     Route::post('/properties/create/action', [\App\Http\Controllers\Client\PropertyController::class, 'create_action'])->name('client.property.create.action');
+    Route::get('/properties/edit/{id}', [\App\Http\Controllers\Client\PropertyController::class, 'edit'])->name('client.property.edit');
+    Route::post('/properties/edit/action/{id}', [\App\Http\Controllers\Client\PropertyController::class, 'edit_action'])->name('client.property.edit.action');
     
     Route::post('/file/upload', [\App\Http\Controllers\Client\PropertyController::class, 'uploadLargeFiles'])->name('client.property.file.upload');    
     

@@ -21,8 +21,12 @@
         </div>
         @endif
 
-        <form action="{{ route('client.property.create.action') }}" method="post" id="myform" enctype="multipart/form-data" class="w-full flex flex-col gap-4">
+        
+
+        <form action="{{ route('client.property.edit.action' , $data->id) }}" method="post" id="myform" enctype="multipart/form-data" class="w-full flex flex-col gap-4">
             @csrf
+
+            <input type="text" name="property_number" class="hidden" value="{{ $data->property_number }}" />
 
             <div class="flex flex-col w-full gap-2">
                 <label for="title" class="text-gray-700"> عنوان العقار  </label>
@@ -195,7 +199,6 @@
 
                         <h6 class="text-gray-600 font-semibold mt-6">{{ __('cover_img') }}</h6>
                         <div id="cover-image-preview-container" class="mt-2 mb-6 relative bg-light-secondary min-h-[200px] grid grid-cols-4 gap-4 p-4 rounded-lg border-dashed border-primary border">
-
                             <img src="{{ asset('imgs/print_photo.png') }}" class="w-[150px] absolute left-[50%] top-5" alt="" id="cover_img_placeholder" />
                         </div>
 
@@ -211,7 +214,8 @@
 
                         <h6 class="text-gray-600 font-semibold mt-6">{{ __('proprety_imgs') }}</h6>
                         <div id="image-preview-container" class="mt-4 relative bg-light-secondary min-h-[200px] grid grid-cols-4 gap-4 p-4 rounded-lg border-dashed border-primary border">
-                            <img src="{{ asset('imgs/print_photo.png') }}" class="w-[150px] absolute left-[50%] top-5" alt="" id="img_placeholder" />
+                            
+                            <!-- <img src="{{ asset('imgs/print_photo.png') }}" class="w-[150px] absolute left-[50%] top-5" alt="" id="img_placeholder" /> -->
                         </div>                    
 
                         <div class="flex justify-start items-center gap-4 mt-8">
@@ -225,7 +229,7 @@
 
                         <h6 class="text-gray-600 font-semibold mt-6">{{ __('proprety_videos') }}</h6>
                         <div id="video-preview-container" class="mt-4 relative bg-light-secondary min-h-[200px] grid grid-cols-4 gap-4 p-4 rounded-lg border-dashed border-primary border">
-                            <img src="{{ asset('imgs/outline_video.png') }}" class="w-[150px]  absolute left-[50%] top-5" alt="" id="vid_placeholder" />
+                            {{--<img src="{{ asset('imgs/outline_video.png') }}" class="w-[150px]  absolute left-[50%] top-5" alt="" id="vid_placeholder" />--}}
                         </div>
                     </div>
 
@@ -264,8 +268,98 @@
 <script src="{{ asset('js/proprety.js') }}"></script>
 
 <script>
-    coverImg = 2;
-    console.log(coverImg)
+    // get files data to JS
+
+    // push images data
+    @foreach($data->images()->get() as $file)
+        //console.log(`{{ $file->file->url }}`)
+        data = {
+            file: null,            
+            filename: `{{ $file->file->url }}`,
+            file_id: `{{ $file->file->id }}`
+        };
+        uploadedFiles.images.push(data);
+
+        content = `
+        <div class="relative" data-file-name="{{ $file->file->url }}">
+            <img src="{{ $file->file->url }}" alt="Preview" class="w-56 h-56 bg-white object-cover rounded">
+            <button type="button" class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center remove-preview-image" data-file-id="{{$file->file->id}}" data-file-name="{{ $file->file->url }}">&times;</button>
+        </div>`;
+            
+        imagePreviewContainer.append(content);
+
+        imagePreviewContainer.find('.remove-preview-image').last().on('click', function() {
+            let fileName = $(this).data('file-name');
+            let fileID = $(this).data('file-id');
+            imageUploader.cancel();// resetting  
+            //console.error(fileID);          
+            sendRemoveRequest(fileID, 'image');
+            $(this).parent().remove();   
+        });
+
+    @endforeach
+
+    // push videos
+    @foreach($data->videos()->get() as $file)
+        //console.log(`{{ $file->file->url }}`)
+        data = {
+            file: null,            
+            filename: `{{ $file->file->url }}`,
+            file_id: `{{ $file->file->id }}`
+        };
+        uploadedFiles.videos.push(data);
+
+        content = `
+        <div class="relative" data-file-name="{{ $file->file->url }}">
+            <video class="bg-white w-56 h-56 object-cover rounded" controls>
+                <source src="{{ $file->file->url }}" >
+                Your browser does not support the video tag.
+            </video>
+            <button type="button" class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center remove-preview-video" data-file-id="{{$file->file->id}}" data-file-name="{{ $file->file->url }}">&times;</button>
+        </div>`;
+
+        videoPreviewContainer.append(content);
+
+        videoPreviewContainer.find('.remove-preview-image').last().on('click', function() {
+            let fileName = $(this).data('file-name');
+            let fileID = $(this).data('file-id');
+            imageUploader.cancel();// resetting  
+            //console.error(fileID);          
+            sendRemoveRequest(fileID, 'image');
+            $(this).parent().remove();   
+        });
+
+    @endforeach
+
+    // push cover    
+    data = {
+        file: null,            
+        filename: `{{ $data->cover->url }}`,
+        file_id: `{{ $data->cover->id }}`
+    };
+    coverImg = data;
+
+    content = `
+    <div class="relative" data-file-name="{{ $data->cover->url }}">
+        <img src="{{ $data->cover->url }}" alt="Preview" class="w-56 h-56 bg-white object-cover rounded">
+        <button type="button" class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center remove-preview-image" data-file-id="{{ $data->cover->id }} data-file-name="{{ $data->cover->url }}">&times;</button>
+    </div>`;
+
+    coverPreviewContainer.empty();
+    coverPreviewContainer.append(content);
+
+    // Attach event listener to remove button
+    coverPreviewContainer.find('.remove-preview-image').last().on('click', function() {
+        //let fileName = $(this).data('file-name');
+        //let fileID = $(this).data('file-id');
+        //sendRemoveRequest(fileID, 'image');
+        imageUploader.cancel();// resetting            
+        coverImg = null;
+        $(this).parent().remove();
+    }); 
+    
+    console.log(uploadedFiles);
+
 </script>
 
 <script src="https://maps.googleapis.com/maps/api/js?key={{ env('MAP_KEY')}}&callback=initMap" async ></script>

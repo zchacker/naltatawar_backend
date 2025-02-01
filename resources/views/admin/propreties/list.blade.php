@@ -34,7 +34,7 @@
                         <td class="px-6 py-4"> {{ Str::limit($proprety->title , 18) }} </td>
                         <td class="px-6 py-4"> {{ $proprety->city }} </td>
                         <td class="px-6 py-4"> {{ $proprety->price }} </td>
-                        <td class="px-6 py-4"> {{ $proprety->add_by()->name }} </td>
+                        <td class="px-6 py-4"> {{ $proprety->add_by->name }} </td>
                         <td class="px-6 py-4 flex gap-2"> 
                             <a href="javascript:copy('{{ $proprety->property_number }}')" class="text-blue-500 flex items-center">
                                 {{ $proprety->property_number }}

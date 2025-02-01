@@ -153,9 +153,13 @@ class PropertyController extends Controller
         // check if the user allowed to add a new item
         $type       = $request->user()->account_type;
         $max_items  = $request->user()->subscription->plan->items;
+        $phone      = $request->user()->phone;
 
         if($type == 3) // this is agent sub user
         {
+            // set the parent phone
+            $phone      = $request->user()->parent->phone;
+
             // find who is parent account, to check and update data to it
             $parent        = $request->user()->parent;
             $manager_data  = UsersModel::where('id', $parent)->first();
@@ -331,6 +335,40 @@ class PropertyController extends Controller
                 ->withInput($request->all());
             }
             
+            // this data to be sent to the wordpress website
+            $proprety_data = [
+
+                "id"                => $data["id"],
+                "title"             => $request->title,                
+                "description"       => $request->description,                
+                "type"              => $request->type,                
+                "purpose"           => $request->purpose,
+                "license_no"        => $request->license_no,   
+                "location"          => $request->location,                
+                "city"              => $request->city, 
+                "neighborhood"      => $request->neighborhood,                
+                "price"             => $request->price,  
+                "real_estate_phone" => $phone,
+                
+                "space"             => $request->space,                
+                "rooms"             => $request->rooms,                
+                "bathrooms"         => $request->bathrooms,                
+                "kitchen"           => $request->kitchen,                
+                "hall"              => $request->has('hall') ? TRUE : FALSE,                
+                "living_room"       => $request->has('living_room') ? TRUE : FALSE,                
+                "elevator"          => $request->has('elevator') ? TRUE : FALSE,                
+                "fiber"             => $request->has('fiber') ? TRUE : FALSE,                
+                "school"            => $request->has('school') ? TRUE : FALSE,                
+                "mosque"            => $request->has('mosque') ? TRUE : FALSE,                
+                "pool"              => $request->has('pool') ? TRUE : FALSE,                
+                "garden"            => $request->has('garden') ? TRUE : FALSE,
+                
+                'status'            => 'pending'                
+            ];
+
+            $proprety_data = json_decode(json_encode($proprety_data));
+
+            PropretyAPIUpdate::dispatch( $proprety_data, $cover_img_id, $imageIds, $videoIds )->onQueue('save_proprety');
 
             /*
             dispatch(function () use ( $proprety_data, $cover_img_id, $imageIds, $videoIds ) { 
@@ -364,9 +402,7 @@ class PropertyController extends Controller
             return abort(Response::HTTP_NOT_FOUND);
         }
         
-        // if ($data->images()->isEmpty()) {
-        //     dump('No images found.');
-        // }
+        // dd( $data->cover->url );
 
         // dump( $data->images()->first()->file()->url );
 
@@ -378,6 +414,141 @@ class PropertyController extends Controller
 
         return view('client.propreties.update' , compact('data'));
 
+    }
+
+    public function edit_action(Request $request)
+    {
+
+        $type       = $request->user()->account_type;        
+        $phone      = $request->user()->phone;
+
+        if($type == 3) // this is agent sub user
+        {
+            // set the parent phone
+            $phone      = $request->user()->parent->phone;
+        }
+
+        // data from user request
+        $cover_img_id   = $request->cover_img;        
+        $imageIds       = $request->input('images'); // Example: [1, 2, 3]
+        $videoIds       = $request->input('videos'); // Example: [1, 2, 3]        
+                     
+        $facilities_json = [
+            "space"             => $request->space,                
+            "rooms"             => $request->rooms,                
+            "bathrooms"         => $request->bathrooms,                
+            "kitchen"           => $request->kitchen,                
+            "hall"              => $request->has('hall') ? TRUE : FALSE,                
+            "living_room"       => $request->has('living_room') ? TRUE : FALSE,                
+            "elevator"          => $request->has('elevator') ? TRUE : FALSE,                
+            "fiber"             => $request->has('fiber') ? TRUE : FALSE,                
+            "school"            => $request->has('school') ? TRUE : FALSE,                
+            "mosque"            => $request->has('mosque') ? TRUE : FALSE,                
+            "pool"              => $request->has('pool') ? TRUE : FALSE,                
+            "garden"            => $request->has('garden') ? TRUE : FALSE,                              
+        ];
+
+        $proprety = PropertyModel::where('id', $request->id)->update([
+            "user_id"           => $request->user()->id,                               
+            "property_number"   => $request->property_number,
+            "title"             => $request->title,                
+            "description"       => $request->description,   
+            "cover_img"         => $cover_img_id,   
+            "type"              => $request->type,                
+            "purpose"           => $request->purpose,                
+            'images'            => implode( ',' , $imageIds ?? [] ),
+            'videos'            => implode( ',' , $videoIds ?? [] ),
+            "license_no"        => $request->license_no,   
+            "location"          => $request->location,                
+            "city"              => $request->city, 
+            "neighborhood"      => $request->neighborhood,                
+            "price"             => $request->price,                
+            
+            'facilities'        => $facilities_json,
+            
+            'status'            => 'pending'
+        ]);
+
+        $property_number = PropertyModel::where('id', $request->id)->first()->property_number;
+
+        if($proprety)
+        {
+
+            // remove all media & images
+            PropertyFilesModel::where('property_id' ,  $request->id)->forceDelete();
+
+            // this perfect
+            // add the images IDs
+            foreach($imageIds as $imageId)
+            {
+                PropertyFilesModel::create([
+                    'type'          => 'image',
+                    'file_id'       => $imageId,
+                    'property_id'   => $request->id
+                ]);
+            }
+
+            foreach($videoIds as $videoId)
+            {
+                PropertyFilesModel::create([
+                    'type'          => 'video',
+                    'file_id'       => $videoId,
+                    'property_id'   => $request->id
+                ]);
+            }
+
+            PropertyFilesModel::create([
+                'type'          => 'cover',
+                'file_id'       => $cover_img_id,
+                'property_id'   => $request->id
+            ]);
+
+        }else{
+
+            // faild to save
+            return back()
+            ->withErrors(['error' => __('faild_to_save') ])
+            ->withInput($request->all());
+
+        }
+        
+        // this data to be sent to the wordpress website
+        $proprety_data = [
+
+            "id"                => $property_number,
+            "title"             => $request->title,                
+            "description"       => $request->description,                
+            "type"              => $request->type,                
+            "purpose"           => $request->purpose,
+            "license_no"        => $request->license_no,   
+            "location"          => $request->location,                
+            "city"              => $request->city, 
+            "neighborhood"      => $request->neighborhood,                
+            "price"             => $request->price, 
+            "real_estate_phone" => $phone,      
+            
+            "space"             => $request->space,                
+            "rooms"             => $request->rooms,                
+            "bathrooms"         => $request->bathrooms,                
+            "kitchen"           => $request->kitchen,                
+            "hall"              => $request->has('hall') ? TRUE : FALSE,                
+            "living_room"       => $request->has('living_room') ? TRUE : FALSE,                
+            "elevator"          => $request->has('elevator') ? TRUE : FALSE,                
+            "fiber"             => $request->has('fiber') ? TRUE : FALSE,                
+            "school"            => $request->has('school') ? TRUE : FALSE,                
+            "mosque"            => $request->has('mosque') ? TRUE : FALSE,                
+            "pool"              => $request->has('pool') ? TRUE : FALSE,                
+            "garden"            => $request->has('garden') ? TRUE : FALSE,
+            
+            'status'            => 'pending'                
+        ];
+
+        $proprety_data = json_decode(json_encode($proprety_data));
+
+        PropretyAPIUpdate::dispatch( $proprety_data, $cover_img_id, $imageIds, $videoIds )->onQueue('save_proprety');           
+        
+        return back()->with(['success' => __('added_successfuly')]);
+      
     }
 
     // we not use this any more ....
@@ -512,7 +683,7 @@ class PropertyController extends Controller
             $file_id =  $file_model->id; // Retrieve the ID of the newly inserted row
 
             // run this task in background queue
-            FileUploadJob::dispatch( $file_id , $path );
+            FileUploadJob::dispatch( $file_id , $path )->onQueue('save_file');
 
             /*
             dispatch(function () use ( $file_id , $path ) {                 

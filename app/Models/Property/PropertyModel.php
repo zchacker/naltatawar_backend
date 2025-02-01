@@ -84,9 +84,9 @@ class PropertyModel extends Model
 
     public function images()
     {
-        return $this->hasMany(PropertyFilesModel::class, 'property_id', 'id');
-        //->where('type', 'image');
-        //->orderBy('id', 'desc'); // Optional: Get the latest image
+        return $this->hasMany(PropertyFilesModel::class, 'property_id', 'id')
+        ->where('type', 'image')
+        ->orderBy('id', 'desc'); // Optional: Get the latest image
     }
     
     public function videos()
