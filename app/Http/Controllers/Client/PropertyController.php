@@ -187,7 +187,8 @@ class PropertyController extends Controller
             }
 
         } 
-        
+                
+
         // validate the subscription
         $subscription           = SubscriptionsModel::where('user_id' , $request->user()->id)->first();
         $subscription_end_date  = Carbon::parse($subscription->end_date);
@@ -348,7 +349,7 @@ class PropertyController extends Controller
                 "city"              => $request->city, 
                 "neighborhood"      => $request->neighborhood,                
                 "price"             => $request->price,  
-                "real_estate_phone" => $phone,
+                "phone"             => $phone,
                 
                 "space"             => $request->space,                
                 "rooms"             => $request->rooms,                
@@ -427,6 +428,7 @@ class PropertyController extends Controller
             // set the parent phone
             $phone      = $request->user()->parent->phone;
         }
+        
 
         // data from user request
         $cover_img_id   = $request->cover_img;        
@@ -525,7 +527,7 @@ class PropertyController extends Controller
             "city"              => $request->city, 
             "neighborhood"      => $request->neighborhood,                
             "price"             => $request->price, 
-            "real_estate_phone" => $phone,      
+            "phone"             => $phone,      
             
             "space"             => $request->space,                
             "rooms"             => $request->rooms,                
@@ -544,10 +546,10 @@ class PropertyController extends Controller
         ];
 
         $proprety_data = json_decode(json_encode($proprety_data));
-
+        
         PropretyAPIUpdate::dispatch( $proprety_data, $cover_img_id, $imageIds, $videoIds )->onQueue('save_proprety');           
         
-        return back()->with(['success' => __('added_successfuly')]);
+        return back()->with(['success' => __('updated_successfuly')]);
       
     }
 

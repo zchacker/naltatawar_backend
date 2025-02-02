@@ -6,6 +6,7 @@ use App\Models\Property\FilesModel;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class PropretyAPIUpdate implements ShouldQueue
 {
@@ -101,6 +102,7 @@ class PropretyAPIUpdate implements ShouldQueue
             'real_estate_price'                 => $this->proprety_data->price,
             'real_estate_neighborhood'          => $this->proprety_data->neighborhood,
             'real_estate_location'              => $this->proprety_data->location,
+            'real_estate_phone'                 => $this->proprety_data->phone,
             'real_estate_images'                => $images,
             'real_estate_videos'                => $videos,
             
@@ -120,5 +122,6 @@ class PropretyAPIUpdate implements ShouldQueue
 
         ]);
 
+        Log::info( $this->proprety_data->phone );
     }
 }

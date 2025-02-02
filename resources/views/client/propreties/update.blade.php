@@ -293,8 +293,9 @@
             let fileID = $(this).data('file-id');
             imageUploader.cancel();// resetting  
             //console.error(fileID);          
-            sendRemoveRequest(fileID, 'image');
-            $(this).parent().remove();   
+            sendRemoveRequest(fileID, 'image');// this to server
+            uploadedFiles.images = uploadedFiles.images.filter(file => file.filename !== fileName);// this local
+            $(this).parent().remove();
         });
 
     @endforeach
@@ -325,7 +326,7 @@
             let fileID = $(this).data('file-id');
             imageUploader.cancel();// resetting  
             //console.error(fileID);          
-            sendRemoveRequest(fileID, 'image');
+            sendRemoveRequest(fileID, 'image');// this to server            
             $(this).parent().remove();   
         });
 
