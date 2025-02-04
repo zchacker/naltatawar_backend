@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client\Billing;
 use App\Http\Controllers\Controller;
 use App\Models\Payments\CardsTokensModel;
 use App\Models\Payments\PaymentsModel;
+use App\Models\Subscription\SubscriptionsModel;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -24,9 +25,44 @@ class PaymentsController extends Controller
         
         $query      = PaymentsModel::where(['user_id' => $request->user()->id , 'status' => 'paid']);
         $sum        = $query->count('id');
-        $contacts   = $query->paginate(100);
+        $query->orderBy('id', 'desc'); 
+        $payments   = $query->paginate(100);      
+
+        $subscription = SubscriptionsModel::where('user_id' , $request->user()->id)->latest()->first();        
+        $subscription_end_date  = Carbon::parse($subscription->end_date);
+        $today                  = Carbon::today();
+        $valid_subscribe = false;
+
+        if($subscription_end_date->lt($today))
+        {
+            $valid_subscribe = false;
+        }else{
+            $valid_subscribe = true;
+        }
         
-        return view('client.payments.list', compact('contacts', 'sum'));
+        return view('client.payments.list', compact('payments', 'subscription', 'valid_subscribe' , 'sum'));
+    }
+
+    public function update_subscription_status(Request $request)
+    {
+        $subscription = SubscriptionsModel::where('user_id' , $request->user()->id)->latest()->first();
+
+        if( $subscription->status == "active" )
+        {
+            $subscription->status = "cancelled";
+        }else{
+            $subscription->status = "active";
+        }
+        
+        if($subscription->save())
+        {
+            return back()->with(['success' => __('updated_successfuly')]);
+        }else{
+            return back()
+            ->withErrors(['error' => __('faild_to_save')])
+            ->withInput($request->all());
+        }
+
     }
 
 

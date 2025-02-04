@@ -1,4 +1,4 @@
-@include('client.header')
+@include('admin.header')
 
 <div class="mt-4 flex flex-col gap-8">
     <h2 class="font-bold text-xl"> {{__('create_proprety')}} </h2>
@@ -17,7 +17,7 @@
         </div>
         @endif
 
-        <form action="{{ route('client.property.create.action') }}" method="post" id="myform" enctype="multipart/form-data" class="w-full flex flex-col gap-4">
+        <form action="{{ route('admin.property.create.action') }}" method="post" id="myform" enctype="multipart/form-data" class="w-full flex flex-col gap-4">
             @csrf
 
             <input type="text" name="title" class="input" placeholder="عنوان العقار" value="{{ old('title') }}" required autocomplete="off" />
@@ -218,7 +218,7 @@
 <script>
     // these vars to pass to proprety.js
     let csrf = '{{ csrf_token() }}';
-    let target_url = "{{ route('client.property.file.upload') }}";
+    let target_url = "{{ route('admin.property.file.upload') }}";
     let error_upload_img = "{{ __('error_uploading_img') }}";
     let error_upload_vid = "{{ __('error_uploading_video') }}";
     let most_upload_img  = "{{ __('upload_images') }}";
@@ -290,4 +290,5 @@
     }
 </script>
 
-@include('client.footer')
+
+@include('admin.footer')

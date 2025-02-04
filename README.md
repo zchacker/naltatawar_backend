@@ -26,7 +26,7 @@ Laravel is accessible, powerful, and provides tools required for large, robust a
 please run this command to play queue
 
 ```bash
-php artisan queue:work --queue=save_file,save_proprety
+php artisan queue:work --queue=save_file,save_proprety,mail --tries=3
 ```
 also run scheduled jobs using this command 
 

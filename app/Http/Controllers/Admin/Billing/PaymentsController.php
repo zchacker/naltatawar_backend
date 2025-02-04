@@ -21,6 +21,7 @@ class PaymentsController extends Controller
     {
         
         $query      = PaymentsModel::query();
+        $query->orderBy('created_at' , 'desc');
         $sum        = $query->count('id');
         $payments   = $query->paginate(100);
         

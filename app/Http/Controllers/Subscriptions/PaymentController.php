@@ -30,7 +30,8 @@ class PaymentController extends Controller
             $price = $query->price * 100;// convert to hallah
         }
 
-        Session::put('plan_id', $request->plan); // Save the plan ID in session
+        Session::put( 'plan_id', $request->plan ); // Save the plan ID in session
+        Session::put( 'user_id', $request->user()->id ); // Save the user ID in session
 
         return view('payments.pay', compact('price', 'name'));
     }
@@ -54,6 +55,7 @@ class PaymentController extends Controller
 
             // read plan data 
             $planId     = Session::pull('plan_id'); // use ::pull to remove it not use ( ::get ...)
+            $user_id    = Session::pull('user_id'); // use ::pull to remove it
             $plan_data  = PlansModel::orderByDesc('created_at')->where('id', $planId)->first();
                        
 
@@ -90,25 +92,38 @@ class PaymentController extends Controller
                 
                 $payment->save(); // save payment
                 
-                
-                //save the subscription
-                $subscription = new SubscriptionsModel();
-                
+                // update the exsit substitution or create new one
+                $subscription = SubscriptionsModel::where('user_id' , $user_id)->first();
+                                
                 $end_date = Carbon::now()->addMonth();
                 if(strcmp($plan_data['billing_cycle'] , 'yearly') == 0)
                 {
                     $end_date = Carbon::now()->addYear();
                 }
-                
-                $subscription->user_id      = $request->user()->id;
-                $subscription->plan_id      = $planId;
-                $subscription->start_date   = Carbon::today();
-                $subscription->end_date     = $end_date;
-                $subscription->status       = 'active';
-                $subscription->save();
-                
-                Session::put('payment_id', $data['id'] );// save payment_id
-                
+
+                if($subscription)
+                {
+
+                    $subscription->end_date     = $end_date;
+                    $subscription->status       = 'active';
+                    $subscription->save();
+
+                }else{
+                    
+                    //save the subscription
+                    $subscription = new SubscriptionsModel();
+                                    
+                    $subscription->user_id      = $request->user()->id;
+                    $subscription->plan_id      = $planId;
+                    $subscription->start_date   = Carbon::today();
+                    $subscription->end_date     = $end_date;
+                    $subscription->status       = 'active';
+                    $subscription->save();
+                    
+                    Session::put('payment_id', $data['id'] );// save payment_id
+
+                }                                            
+
                 //redirect to success page
                 return redirect()->route('payment.success');
 

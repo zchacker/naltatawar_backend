@@ -26,6 +26,7 @@
 
     "added_successfuly":"تمت الاضافة بنجاح",
     "updated_successfuly":"تم التحديث بنجاح",
+    "deleted_successfuly":"تم الحذف بنجاح",
     "subscription_updated_successfuly":"تم تحديث الاشتراك بنجاح",
     "subscription_expired":"اشتراكك انتهى، يرجى تجديد الاشتراك",
     "faild_to_save":"فشل حفظ البيانات",
@@ -71,10 +72,15 @@
     "leave_empty_not_change_password":"اتركه فارغ لعدم تغيير كلمة السر",
 
     "delete_confirmation":"تأكيد الحذف ؟",
+    "delete_proprety_confirmation":"هل أنت متأكد من حذف العقار؟ علماً بأن الحصة الشهرية لن تنقص بحذف العقار",
     "remain":"متبقي",
     "max_users_reached":"تم الوصول للعدد الاقصى من المستخدمين",
 
     "payments":"المدفوعات",
+    "cancel_subscription":"إلغاء الاشتراك",
+    "retrit_cancel_subscription":"التراجع عن إلغاء الاشتراك",
+    "renew_subscription": "تجديد الاشتراك",
+    "subscription_end_date": "ينتهي اشتراكك بحلول <strong dir='ltr'>:date</strong> يرجى التأكد من إضافة بطاقة الى حسابك لضمان تجديد",
     "credi_cards":"بطاقات الدفع الالكتروني",
     "card_digits":"رقم البطاقة",
     "card_company":"العلامة التجارية",

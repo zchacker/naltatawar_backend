@@ -326,7 +326,8 @@
             let fileID = $(this).data('file-id');
             imageUploader.cancel();// resetting  
             //console.error(fileID);          
-            sendRemoveRequest(fileID, 'image');// this to server            
+            sendRemoveRequest(fileID, 'image');// this to server   
+            uploadedFiles.videos = uploadedFiles.videos.filter(file => file.filename !== fileName);// this local         
             $(this).parent().remove();   
         });
 

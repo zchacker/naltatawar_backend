@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendMail;
 use App\Models\Auth\UsersModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -63,6 +64,12 @@ class SignupController extends Controller
             });
             */
 
+            $view_name  = "emails.confirm_email";
+            $data_array = compact('code');
+            $email      = $request->email;
+            $subject    = "$code رمز تحقق تأكيد البريد الالكتروني";
+
+            SendMail::dispatch( $view_name , $data_array, $email , $subject )->onQueue('mail');
             
 
             /*
@@ -73,7 +80,9 @@ class SignupController extends Controller
             */
 
             // save user data like email or id to verify it
-            Session::put('user_email', $request['email'] );
+            Session::put('user_email', $request->email );
+
+            //dd( $request->email , Session::get('user_email') );
 
             // redirect to otp screen
             // return redirect()->intended(route('auth.sign_up'));
@@ -94,9 +103,46 @@ class SignupController extends Controller
         }
     }
 
+    public function resend_otp(Request $request)
+    {
+
+        $email = Session::get('user_email');
+        $user = UsersModel::where('email', $email)->first();
+
+        // Check if 3 minutes have passed since the last reset
+        if ( $user->last_reset && ( abs(now()->diffInMinutes($user->last_reset)) < 3) ) {
+            $remain = 3 - number_format( abs(now()->diffInMinutes($user->last_reset)) , 2 );
+            return response()->json([
+                'status' => false,
+                'time' =>   abs(now()->diffInMinutes($user->last_reset))  ,
+                'message' => "رجاء انتظر $remain دقائق قبل طلب رمز جديد",
+                'last_reset_time' => $user->last_reset,
+            ], 200); // 429: Too Many Requests
+        }
+
+        // Generate new OTP
+        $code = random_int(100000, 999999);
+        $user->code = $code;
+        $user->last_reset = now();
+        $user->save();
+
+        // Prepare email data
+        $view_name = "emails.confirm_email";
+        $data_array = ['code' => $code];
+        $subject = "$code رمز تحقق تأكيد البريد الالكتروني";
+
+        // Dispatch email job
+        SendMail::dispatch($view_name, $data_array, $email, $subject)->onQueue('mail');
+
+        return response()->json([
+            'status' => true,
+            'last_reset_time' => $user->last_reset,
+        ]);
+
+    }
 
     public function show_otp(Request $request)
-    {
+    {        
         return view(('auth.verify')); // this for verification of email only, and not used to forgot password
     }
 

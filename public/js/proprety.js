@@ -258,13 +258,13 @@ function previewFile(file, container) {
         }
 
         container.append(content);
-
         
         // Attach event listener to remove button
         container.find('.remove-preview-image').last().on('click', function() {
             let fileName = $(this).data('file-name');
             imageUploader.cancel();// resetting            
-            sendRemoveRequest(fileName, 'image');
+            //sendRemoveRequest(fileName, 'image');
+            uploadedFiles.images = uploadedFiles.images.filter(file => file.filename !== fileName);// this local
             $(this).parent().remove();            
         });
 
@@ -272,7 +272,8 @@ function previewFile(file, container) {
         container.find('.remove-preview-video').last().on('click', function() {
             let fileName = $(this).data('file-name');
             videoUploader.cancel();// resetting
-            sendRemoveRequest(fileName, 'video');
+            //sendRemoveRequest(fileName, 'video');
+            uploadedFiles.videos = uploadedFiles.videos.filter(file => file.filename !== fileName);// this local
             $(this).parent().remove();
         });
 
@@ -299,7 +300,8 @@ function coverPreviewFile(file , container){
         container.find('.remove-preview-image').last().on('click', function() {
             let fileName = $(this).data('file-name');
             imageUploader.cancel();// resetting            
-            sendRemoveRequest(fileName, 'image');
+            //sendRemoveRequest(fileName, 'image');
+            coverImg = null;// clear the cover image
             $(this).parent().remove();
         });            
 

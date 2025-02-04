@@ -3,11 +3,16 @@
 <div class="mt-4 flex flex-col gap-4">
     <h2 class="font-bold text-xl"> {{__('your_properties')}} </h2>     
 
+    <a href="{{ route('admin.property.create') }}" class="bg-cta px-8 py-2 items-center rounded-full flex gap-2 self-start">
+        <img src="{{ asset('imgs/add.png') }}" alt="" class="w-[20px]" />
+        <span class="font-medium text-white"> {{ __('create_proprety') }} </span>
+    </a>
+
     <div>
-        <form action="{{ route('client.property.list') }}" method="get" class="flex gap-2 items-center">
+        <form action="{{ route('admin.property.list') }}" method="get" class="flex gap-2 items-center">
             <input type="text" name="query" class="input w-1/2" placeholder="رقم العقار، او اسم العقار" value="{{ old('query') }}" />
             <button type="submit" class="submit_btn">بحث</button>
-            <a href="{{ route('client.property.list') }}">مسح</a>
+            <a href="{{ route('admin.property.list') }}">مسح</a>
         </form>
     </div>
 
@@ -24,7 +29,8 @@
                         <th scope="col" class="px-6 py-3">#الترخيص</th>
                         <th scope="col" class="px-6 py-3">الحالة</th>
                         <th scope="col" class="px-6 py-3">نشر</th>
-                        <th scope="col" class="px-6 py-3">تاريخ الاضافة</th>
+                        <!-- <th scope="col" class="px-6 py-3">تاريخ الاضافة</th> -->
+                        <th scope="col" class="px-6 py-3"> إجراء  </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -54,7 +60,22 @@
                             <span>/</span>
                             <a href="javascript:publish( {{ $proprety->id }} , 'rejected' )" class="text-red-400 underline">رفض</a>
                         </td>
-                        <td class="px-6 py-4"> {{ $proprety->created_at }} </td>
+                        <!-- <td class="px-6 py-4"> {{ $proprety->created_at }} </td> -->
+                        <td class="px-6 py-4"> 
+                            <div class="flex gap-2">
+                                <a href="{{ route('admin.property.edit' , $proprety->id) }}">تعديل</a> 
+                                <form action="{{ route('admin.property.delete' , $proprety->id) }}" method="POST" onsubmit="return confirmDelete(event)">
+                                    @method('DELETE')
+                                    @csrf
+                                    
+                                    <button type="submit" class="text-red-600 hover:text-red-900" title="Delete">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </button>
+                                </form>    
+                            </div>
+                        </td>                        
                     </tr>
                     @endforeach        
                 </tbody>

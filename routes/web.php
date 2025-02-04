@@ -27,6 +27,7 @@ Route::get('/resetpassword/{id}/{token}', [\App\Http\Controllers\Auth\ForgotPass
 
 Route::get('/verify-email', [\App\Http\Controllers\Auth\SignupController::class, 'show_otp'])->name('auth.otp.show');
 Route::post('/verify-otp', [\App\Http\Controllers\Auth\SignupController::class, 'confirm_otp'])->name('auth.otp.confirm');
+Route::post('/resent-otp', [\App\Http\Controllers\Auth\SignupController::class, 'resend_otp'])->name('auth.otp.resend');
 
 
 Route::get('/verify_otp', [\App\Http\Controllers\Auth\ForgotPasswordController::class, 'verify'])->name('auth.verify');
@@ -43,6 +44,15 @@ Route::group(['middleware' => ['auth:admin'] , 'prefix' => 'admin'], function ()
     Route::get('/properties/my', [\App\Http\Controllers\Admin\PropertyController::class, 'my_list'])->name('admin.property.list.my');
     Route::get('/properties/edit/{id}', [\App\Http\Controllers\Admin\PropertyController::class, 'edit'])->name('admin.property.edit');
     Route::post('/properties/publish', [\App\Http\Controllers\Admin\PropertyController::class, 'publish_properity'])->name('admin.property.publish');
+
+    Route::get('/properties/create', [\App\Http\Controllers\Admin\PropertyController::class, 'create'])->name('admin.property.create');
+    Route::post('/properties/create/action', [\App\Http\Controllers\Admin\PropertyController::class, 'create_action'])->name('admin.property.create.action');
+    Route::get('/properties/edit/{id}', [\App\Http\Controllers\Admin\PropertyController::class, 'edit'])->name('admin.property.edit');
+    Route::post('/properties/edit/action/{id}', [\App\Http\Controllers\Admin\PropertyController::class, 'edit_action'])->name('admin.property.edit.action');
+    
+    Route::delete('/properties/delete/{property}', [\App\Http\Controllers\Admin\PropertyController::class, 'delete'])->name('admin.property.delete');
+    
+    Route::post('/file/upload', [\App\Http\Controllers\Admin\PropertyController::class, 'uploadLargeFiles'])->name('admin.property.file.upload');    
 
     // contact requests    
     Route::get('/contacts/home', [\App\Http\Controllers\Admin\ContactRequestController::class, 'home'])->name('admin.contacts.home');
@@ -121,6 +131,7 @@ Route::group(['middleware' => ['auth:client']], function () {
     
     // payments
     Route::get('/payments/list', [\App\Http\Controllers\Client\Billing\PaymentsController::class, 'payments'])->name('client.payments');
+    Route::post('/payments/update/subscription', [\App\Http\Controllers\Client\Billing\PaymentsController::class, 'update_subscription_status'])->name('client.update.subscription.status');
     Route::get('/payments/invoice/{id}', [\App\Http\Controllers\Client\Billing\PaymentsController::class, 'invoice'])->name('client.invoice');
     Route::get('/cards/list', [\App\Http\Controllers\Client\Billing\PaymentsController::class, 'list_cards'])->name('client.card.list');
     Route::delete('/cards/delete/{card}', [\App\Http\Controllers\Client\Billing\PaymentsController::class, 'delete'])->name('client.card.delete');
@@ -189,6 +200,8 @@ Route::group(['middleware' => ['auth:agent,client'] ], function () {
     Route::get('/properties/edit/{id}', [\App\Http\Controllers\Client\PropertyController::class, 'edit'])->name('client.property.edit');
     Route::post('/properties/edit/action/{id}', [\App\Http\Controllers\Client\PropertyController::class, 'edit_action'])->name('client.property.edit.action');
     
+    Route::delete('/properties/delete/{property}', [\App\Http\Controllers\Client\PropertyController::class, 'delete'])->name('client.property.delete');
+
     Route::post('/file/upload', [\App\Http\Controllers\Client\PropertyController::class, 'uploadLargeFiles'])->name('client.property.file.upload');    
     
     

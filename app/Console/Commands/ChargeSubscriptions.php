@@ -52,6 +52,9 @@ class ChargeSubscriptions extends Command
 
         if($card == null)
         {
+            $subscription->status = "expired"; // set it as expired
+            $subscription->save();
+
             Log::error("User id: {$user_id} Don't have card to charge");
             return;
         }        
@@ -104,7 +107,11 @@ class ChargeSubscriptions extends Command
                     
                     Log::info("Renew completed, user id: {$user_id}");
 
-                }else{                    
+                }else{            
+                    
+                    $subscription->status = "expired"; // set it as expired
+                    $subscription->save();
+
                     Log::info("Payment Faild, user id: {$user_id}");
                 }                
 

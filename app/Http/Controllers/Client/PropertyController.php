@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use App\Jobs\FileUploadJob;
 use App\Jobs\PropretyAPIUpdate;
+use App\Jobs\PropretyDelete;
 use App\Models\Auth\UsersModel;
 use App\Models\Property\FilesModel;
 use App\Models\Property\PropertyFilesModel;
@@ -80,6 +81,7 @@ class PropertyController extends Controller
             });
         }
 
+        $query->orderBy('id', 'DESC'); // show latest added first
         $sum        = $query->count('id');
         $propreties = $query->paginate(50);
 
@@ -125,7 +127,7 @@ class PropertyController extends Controller
         }
 
         // validate the subscription
-        $subscription           = SubscriptionsModel::where('user_id' , $user_id)->first();
+        $subscription           = SubscriptionsModel::where('user_id' , $user_id)->latest()->first();
         $subscription_end_date  = Carbon::parse($subscription->end_date);
         $today                  = Carbon::today();
 
@@ -649,6 +651,19 @@ class PropertyController extends Controller
 
     }
     
+
+    public function delete(PropertyModel $property)
+    {   
+        
+        PropretyDelete::dispatch( $property->property_number )->onQueue('save_proprety'); 
+
+        // send to API that item is deleted
+        $property->delete();
+
+        return back()->with(['success' => __('deleted_successfuly')]);
+        
+    }
+
     /**
      * This related to this SDK
      * https://github.com/pionl/laravel-chunk-upload
